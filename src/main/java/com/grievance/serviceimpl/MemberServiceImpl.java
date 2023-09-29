@@ -105,7 +105,7 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public final List<MemberOutDto> getAllMember(final Integer pageNo) {
-		final Integer pageSize = 5;
+		final Integer pageSize = 8;
 		Page<Member> members = memberRepo.findAll(
 		        PageRequest.of(pageNo, pageSize));
 		if (members.isEmpty()) {
@@ -133,7 +133,7 @@ public class MemberServiceImpl implements MemberService {
 		Member member = memberRepo.findByEmail(loginDto.getEmail());
 		if (Objects.isNull(member)) {
 			throw new ResourceNotFoundException(
-					"Member with email does not exist.");
+					"User with email does not exist.");
 		}
 		String decodedInPass = decode.decodePassword(
 				loginDto.getPassword());

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,13 +30,15 @@ import com.grievance.outdto.TicketOutDto;
 import com.grievance.repository.DepartmentRepo;
 import com.grievance.repository.MemberRepo;
 import com.grievance.repository.TicketRepo;
-import com.grievance.service.TicketService;
+import com.grievance.service.TicketService;;
 
 /**
  * Service implementation for ticket operations.
  */
 @Service
 public final class TicketServiceImpl implements TicketService {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(TicketServiceImpl.class);
 
     /** Repository for ticket-related operations. */
     @Autowired
@@ -64,7 +68,10 @@ public final class TicketServiceImpl implements TicketService {
 	public TicketOutDto createTicket(final TicketDto ticketDto,
 			final String email, final String password)
 			throws ResourceNotFoundException {
+	    LOGGER.info("Creating a new ticket for email: {}", email);
 		if (!ticketDto.getMember().getEmail().equals(email)) {
+		    LOGGER.error("Unauthorized attempt "
+		            + "to create a ticket with mismatched email");
 			throw new UnauthorizedException("Inavlid Details.");
 		}
 		Member existingMember = memberRepo.findByEmail(
@@ -111,8 +118,11 @@ public final class TicketServiceImpl implements TicketService {
 	public TicketOutDto getById(final Integer ticketId,
 			final String email, final String password)
 			throws ResourceNotFoundException {
+	    LOGGER.info("Fetching ticket by ID: {}", ticketId);
 		Ticket ticket = ticketRepo.findByticketId(ticketId);
 		if (Objects.isNull(ticket)) {
+		    LOGGER.error("No ticket found "
+		            + "with Id {}", ticketId);
 			throw new ResourceNotFoundException(
 					"Ticket with this Id does not exists");
 		}
@@ -240,7 +250,7 @@ public final class TicketServiceImpl implements TicketService {
 				|| (!ticketDto.getMember().getEmail().
 				equals(member.getEmail()))) {
 			throw new CannotEditTicketException(
-					"Cannot edit this ticket");
+					"You cannot update this ticket");
 		}
 
 		List<Comment> comments = ticket.get().getComments();

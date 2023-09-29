@@ -84,7 +84,7 @@ public final class DepartmentServiceImpl implements DepartmentService {
 	 */
 	@Override
 	public List<DepartmentOutDto> getAllDeptsPage(final Integer pageNo) {
-		final Integer pageSize = 5;
+		final Integer pageSize = 8;
 		Page<Department> dept = deptRepo.findAll(
 		        PageRequest.of(pageNo, pageSize));
 		if (Objects.isNull(dept)) {
