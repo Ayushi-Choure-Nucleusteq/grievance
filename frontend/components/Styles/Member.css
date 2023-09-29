@@ -1,0 +1,16 @@
+/* Home.css */
+.home-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;  /* to make it take the full height of the viewport */
+    font-family: Arial, sans-serif;
+}
+
+.home-page h1 {
+    font-size: 3rem;
+    color: #333;
+}
+
+
+
