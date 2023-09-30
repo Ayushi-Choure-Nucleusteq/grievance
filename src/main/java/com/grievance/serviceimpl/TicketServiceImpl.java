@@ -38,6 +38,9 @@ import com.grievance.service.TicketService;;
 @Service
 public final class TicketServiceImpl implements TicketService {
     
+    /**
+     * Loggers.
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(TicketServiceImpl.class);
 
     /** Repository for ticket-related operations. */
@@ -78,17 +81,24 @@ public final class TicketServiceImpl implements TicketService {
 				ticketDto.getMember().getEmail());
 
 		if (Objects.isNull(existingMember)) {
+		    LOGGER.error("Email not exists {}", email);
 			throw new ResourceNotFoundException(
 			  "The member associated does not exist.");
 		}
+		LOGGER.info("Found member details for email: {}", email);
 
 		Department department = deptRepo.findByDeptName(
 				ticketDto.getDepartment().getDeptName());
 
 		if (Objects.isNull(department)) {
+		    LOGGER.error("Department not exists {}",
+		            ticketDto.getDepartment().getDeptName());
 			throw new ResourceNotFoundException(
 			  "The department does not exist.");
 		}
+		 LOGGER.info("Found department details for"
+		         + " department name: {}",
+		         ticketDto.getDepartment().getDeptName());
 		ticketDto.setComments(null);
 		Ticket ticket = conversion.ticketdtoToTicket(
 				ticketDto);
@@ -100,6 +110,8 @@ public final class TicketServiceImpl implements TicketService {
 		ticket.setLastUpdateDate(creationDate);
 		ticket.setStatus(TicketStatus.OPEN);
 		Ticket savedTicket = ticketRepo.save(ticket);
+		 LOGGER.info("Ticket created successfully with ID: {}",
+		         savedTicket.getTicketId());
 
 		return conversion.ticketToOutDto(savedTicket);
 	}
@@ -126,6 +138,8 @@ public final class TicketServiceImpl implements TicketService {
 			throw new ResourceNotFoundException(
 					"Ticket with this Id does not exists");
 		}
+		LOGGER.info("Successfully fetched ticket details "
+		        + "for ID: {} for user: {}", ticketId, email);
 		return conversion.ticketToOutDto(ticket);
 	}
 
@@ -142,11 +156,16 @@ public final class TicketServiceImpl implements TicketService {
 	public List<TicketOutDto> getAllTicketsAuth(final String email,
 			final String password, final boolean myTicket,
 			final Integer pageNo) {
+	    LOGGER.info("Initiating request to fetch tickets"
+	            + " for user: {}", email);
 		final Integer pageSize = 5;
 		Member member = memberRepo.findByEmail(email);
+		LOGGER.info("Member with email {} has role: {}",
+		        email, member.getRole());
 		Page<Ticket> tickets = ticketRepo.findAll(
 		  PageRequest.of(pageNo, pageSize, Sort.by("status")));
 		if (tickets.isEmpty()) {
+		    LOGGER.warn("No tickets found");
 			throw new ResourceNotFoundException("No Ticket found.");
 		}
 		List<TicketOutDto> ticketDtos = new ArrayList<>();
@@ -157,10 +176,13 @@ public final class TicketServiceImpl implements TicketService {
 			for (Ticket ticket : tickets) {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}
+			LOGGER.info("Fetching personal tickets for member"
+			        + " with email: {}", email);
 		} else if (member.getRole().equals(MemberRole.ADMIN)) {
 			for (Ticket ticket : tickets) {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}
+			 LOGGER.info("Fetching all tickets for ADMIN");
 		} else if (member.getRole().equals(MemberRole.MEMBER)) {
 			tickets = (Page<Ticket>) ticketRepo.
 				findByDepartment(member.getDepartment(),
@@ -170,28 +192,44 @@ public final class TicketServiceImpl implements TicketService {
 		      ticketDtos.add(conversion.
 						ticketToOutDto(ticket));
 			}
+			 LOGGER.info("Fetching all tickets for MEMBER");
 		}
 
 
 		return ticketDtos;
 	}
+	
+	/**
+     * Fetch tickets based on the provided email and password.
+     *
+     * @param email
+     * @param password
+     * @param myTicket
+     * @param pageNo
+     * @param status
+     * @return the output DTO of the created ticket
+     */
 
 	@Override
 	public List<TicketOutDto> getAllTicketsFilter(final String email,
 			final String password, final boolean myTicket,
 			final Integer pageNo,
 			final Optional<TicketStatus> status) {
+	    LOGGER.info("Initiating request to fetch filtered"
+	            + " tickets for user: {}.", email);
 		final Integer pageSize = 5;
 		Member member = memberRepo.findByEmail(email);
 		Page<Ticket> tickets = ticketRepo.findAllAndStatus(
 				PageRequest.of(pageNo, pageSize, Sort.by(
 						"status")), status);
 		if (tickets.isEmpty()) {
+		    LOGGER.warn("No tickets found");
 			throw new ResourceNotFoundException("No Ticket found.");
 		}
 
 		List<TicketOutDto> ticketDtos = new ArrayList<>();
 		if (myTicket) {
+		    LOGGER.info("Fetching personal tickets");
 			tickets = (Page<Ticket>) ticketRepo.
 					findByMemberAndStatus(
 			member.getId(), status, PageRequest.of(
@@ -200,11 +238,13 @@ public final class TicketServiceImpl implements TicketService {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}
 		} else if (member.getRole().equals(MemberRole.ADMIN)) {
-			for (Ticket ticket : tickets) {
+		    LOGGER.info("Fetching all tickets for ADMIN");
+		    for (Ticket ticket : tickets) {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}
 		} else if (member.getRole().equals(MemberRole.MEMBER)) {
-			tickets = (Page<Ticket>) ticketRepo
+		    LOGGER.info("Fetching all tickets for MEMBER");
+		    tickets = (Page<Ticket>) ticketRepo
 			  .findByDepartmentAndStatus(member.getDepartment()
 				 .getDeptId(), status, PageRequest.of(
 				     pageNo, pageSize, Sort.by("status")));
@@ -230,25 +270,34 @@ public final class TicketServiceImpl implements TicketService {
 	public TicketOutDto updateTicket(final TicketDto ticketDto,
 			final Integer id, final String email,
 			final String password) {
+	    LOGGER.info("Initiating request to update "
+	            + "ticket with ID: {}", id);
 		Optional<Ticket> ticket = ticketRepo.findById(id);
 
 		if (!ticket.isPresent()) {
+		    LOGGER.error("No ticket found with ID: {}", id);
 			throw new ResourceNotFoundException("No Ticket Found");
 		}
 		if (!ticketDto.getMember().getEmail().equals(email)) {
+		    LOGGER.error("Mismatch in email for update request");
 			throw new UnauthorizedException("Inavlid Details.");
 		}
 		Member member = memberRepo.findByEmail(
 				ticketDto.getMember().getEmail());
 		if (Objects.isNull(member)) {
+		    LOGGER.error("No member associated with email:{}", email);
 			throw new ResourceNotFoundException(
 					"User doesn't exists");
 		}
+		boolean isSameDepartment = ticket.get()
+		        .getDepartment().getDeptName()
+		        .equals(member.getDepartment().getDeptName());
+		boolean isSameEmail = member.getEmail()
+		        .equals(ticket.get().getMember().getEmail());
 
-		if (!(ticket.get().getMember().getDepartment().getDeptName().
-				equals(member.getDepartment().getDeptName()))
-				|| (!ticketDto.getMember().getEmail().
-				equals(member.getEmail()))) {
+		if (!isSameDepartment && !isSameEmail)  {
+		    LOGGER.error("User trying to update ticket from another "
+		            + "department or different member email.");
 			throw new CannotEditTicketException(
 					"You cannot update this ticket");
 		}
