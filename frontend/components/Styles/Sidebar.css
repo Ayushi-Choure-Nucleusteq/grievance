@@ -21,27 +21,6 @@
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Shadow to separate sidebar*/
 }
 
-/* .welcome {
-    font-size: 2vw;
-    font-weight: bold;
-    margin-top: 2vw;
-} */
-
-
-/* .sidebar button {
-    display: block;
-    background: none;
-    border: 1px solid #fff;
-    padding: 0.3vw;
-    color: white;
-    text-align: left;
-    width: 100%;
-    margin-bottom: 1vw;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: medium;
-} */
-
 .sidebar button {
     display: block;
     background: #2d4468;

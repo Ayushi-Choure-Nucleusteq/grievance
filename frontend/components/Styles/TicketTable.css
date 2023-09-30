@@ -202,7 +202,7 @@ input[type="checkbox"] {
 /* Custom checkbox */
 input[type="checkbox"] + label {
     position: relative;
-    padding-left: 35px;   /* space for the custom checkbox */
+    padding-left: 35px;   /* space for checkbox */
     cursor: pointer;
     font-size: 18px;
     line-height: 20px;

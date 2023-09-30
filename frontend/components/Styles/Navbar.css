@@ -32,7 +32,7 @@ nav ul li {
 }
 
 .disabled {
-  pointer-events: none;  /* prevents clicks */
-  opacity: 0.5;         /* makes it look faded/disabled */
-  cursor: not-allowed;  /* shows a "not-allowed" cursor */
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
 }

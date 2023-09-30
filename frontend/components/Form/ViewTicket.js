@@ -1,20 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import "../Styles/ViewTicket.css";
-import Popup from '../Popup/Popup';
-
-
+import Popup from "../Popup/Popup";
+import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 const API_BASE_URL = "http://localhost:8000/api";
 
 function ViewTicket() {
-  const storedData = JSON.parse(sessionStorage.getItem("loginData")) || {};
+  const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
   const requestData = storedData.requestData || {};
   const responseData = storedData.responseData || {};
 
   const [ticketDetails, setTicketDetails] = useState(null);
-  const [isDisable, setIsDisable] = useState(false);
+//   const [isDisable, setIsDisable] = useState(false);
   const [status, setStatus] = useState();
   const [inptcmt, setInptCmt] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -101,8 +100,9 @@ function ViewTicket() {
   return (
     <div className="ticket-details">
       <h2>Ticket Title:- {ticketDetails.ticketName} </h2>
-      {showPopup ? <Popup message={errorMsg} color="red"></Popup> : ""}
+      {/* {showPopup ? <Popup message={errorMsg} color="red"></Popup> : ""} */}
       {successMsg && <Popup message={successMsg} color="green"></Popup>}
+      {errorMsg && <Popup message={errorMsg} color="red"></Popup>}
       {/* Display error message if there's any */}
       {/* {errorMsg &&
                 <div style={{ color: 'red', textAlign: 'center', paddingBottom: '30px', fontSize: "20px", fontWeight: 'bold' }}>
@@ -130,7 +130,7 @@ function ViewTicket() {
               <select
                 name="status"
                 value={status}
-                disabled={isDisable}
+                // disabled={isDisable}
                 onChange={(event) => {
                   handleStatus(event.target.value);
                 }}
@@ -169,10 +169,6 @@ function ViewTicket() {
         <div className="comments-section">
           <h3>Comments</h3>
           <ul className="cmtContainer">
-            {/* {ticketDetails.comments && ticketDetails.comments.map((comment, index) => (
-                            <li key={index}>{comment}</li>
-                        ))} */}
-
             {ticketDetails.comments.map((ele) => (
               <li key={ele.commentId}>
                 <div className="cmtby">{ele.memberEmail}</div>
@@ -185,10 +181,11 @@ function ViewTicket() {
             value={inptcmt}
             placeholder="write your comment here "
             onChange={(e) => setInptCmt(e.target.value)}
+            // disabled={isDisabl/ed}
             disabled={
-                responseData.deptName !== ticketDetails.department &&
-                ticketDetails.member !== responseData.name
-              }
+              responseData.deptName !== ticketDetails.department &&
+              ticketDetails.member !== responseData.name
+            }
           ></textarea>
           <br></br>
           <button

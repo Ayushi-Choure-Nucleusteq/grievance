@@ -121,14 +121,3 @@ button:hover {
   pointer-events: none;
   opacity: 0.5;
 }
-
-/* .changePassword {
-  pointer-events: auto !important;
-} */
-
-/* html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-} */

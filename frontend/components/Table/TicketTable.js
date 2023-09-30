@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import '../Styles/TicketTable.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "../Styles/TicketTable.css";
 
 const API_URL = "http://localhost:8000/api/ticket/getAll";
 
@@ -10,9 +10,9 @@ function TicketTable(props) {
   const [status, setStatus] = useState("filter");
   const [filtered, setFilter] = useState([]);
   const [pageNo, setPageNo] = useState(0);
-  const [myTicket, setMyTicket]=useState(false);
+  const [myTicket, setMyTicket] = useState(false);
 
-  const storedData = JSON.parse(sessionStorage.getItem("loginData")) || {};
+  const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
   const requestData = storedData.requestData || {};
   const navigate = useNavigate();
 
@@ -65,39 +65,37 @@ function TicketTable(props) {
   };
 
   const handleMyTicket = (e) => {
-    if(e.target.checked){
-        setMyTicket(true);
-    }
-    else
-    setMyTicket(false);
-  }
+    if (e.target.checked) {
+      setMyTicket(true);
+    } else setMyTicket(false);
+  };
 
   return (
     <div className="table-container">
       <div className="filter-container">
-    <select
-      className="filter"
-      name="status"
-      value={status}
-      onChange={(event) => handleStatus(event.target.value)}
-    >
-        <option value="filter">Filter</option>
-        <option value="BEING_ADDRESSED">BEING ADDRESSED</option>
-        <option value="RESOLVED">RESOLVED</option>
-        <option value="OPEN">OPEN</option>
-    </select>
+        <select
+          className="filter"
+          name="status"
+          value={status}
+          onChange={(event) => handleStatus(event.target.value)}
+        >
+          <option value="filter">Filter</option>
+          <option value="BEING_ADDRESSED">BEING ADDRESSED</option>
+          <option value="RESOLVED">RESOLVED</option>
+          <option value="OPEN">OPEN</option>
+        </select>
 
-    <div>
-        <input
+        <div>
+          <input
             id="myTicketCheckbox"
             onChange={(e) => handleMyTicket(e)}
             type="checkbox"
             name="myTicket"
             value="Bike"
-        />
-        <label htmlFor="myTicketCheckbox"> My Ticket</label>
-    </div>
-</div>
+          />
+          <label htmlFor="myTicketCheckbox"> My Ticket</label>
+        </div>
+      </div>
 
       <table className="ticket-table">
         <thead>
@@ -137,7 +135,10 @@ function TicketTable(props) {
       </table>
 
       {filtered.length === 0 && (
-        <img className="nodataImage" src="C:\Users\ayush\OneDrive\Desktop\Working\Grievance_FRONT\src\Images\login.jpg"></img>
+        <img
+          className="nodataImage"
+          src="C:\Users\ayush\OneDrive\Desktop\Working\Grievance_FRONT\src\Images\login.jpg"
+        ></img>
       )}
       <div className="pagination-buttons">
         {pageNo > 0 && (

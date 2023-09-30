@@ -24,22 +24,6 @@ form {
 }
 
 
-
-
-/* .ticket-details .details-section {
-    flex: 2;
-    padding: 20px;
-}
-
-.ticket-details .comments-section {
-    flex: 1;
-    position: relative;
-    flex-direction: column;
-    height: 400px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding-left: 20px;
-} */
-
 .ticket-details .details-section {
     flex: 2;
     /* padding: 20px; */
@@ -62,14 +46,6 @@ h2 {
     color: #09368b;
 }
 
-/* .ticket-details .details-section {
-    flex: 1;
-    padding: 20px;
-} */
-
-/* .ticket-details .details-section form {
-    width: 100%;
-} */
 
 .ticket-details .details-section .form-group {
     margin-bottom: 10px;
@@ -79,8 +55,8 @@ h2 {
 
 .ticket-details .details-section label {
     /* display: block; */
-    margin-right: 10px; /* Add some spacing between label and the input */
-    flex-shrink: 0; /* Prevent the label from shrinking */
+    margin-right: 10px;
+    flex-shrink: 0;
     width: 120px;
     /* margin-bottom: 3px; */
     /* font-weight: 600; */
@@ -109,11 +85,6 @@ h2 {
     outline: none;
     background-color: #fff;
 }
-
-/* .ticket-details .details-section .description {
-    min-height: 100px;
-    resize: vertical;
-} */
 
 
 .ticket-details  .details-section .form-group .description{
@@ -173,13 +144,7 @@ h2 {
     padding-left: 20px;
     color: #000;
 }
-/* .ticket-details .updatesDetails {
-    position: absolute;
-    bottom: 10px;
-    left:10px;*/
-/* .ticket-details .details-container {
-    flex-direction: column;
-} */
+
 
 .ticket-details button{
     width: 35%;

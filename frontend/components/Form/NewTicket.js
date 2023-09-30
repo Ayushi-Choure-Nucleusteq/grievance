@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import '../Styles/NewMember.css';
-import axios from 'axios';
-import Popup from '../Popup/Popup';
-
+import React, { useState, useEffect } from "react";
+import "../Styles/NewMember.css";
+import axios from "axios";
+import Popup from "../Popup/Popup";
 
 const API_BASE_URL = "http://localhost:8000/api";
 
 function NewTicket() {
-  const storedData = JSON.parse(sessionStorage.getItem("loginData")) || {};
+  const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
   const responseData = storedData.responseData || null;
   const requestData = storedData.requestData || {};
 

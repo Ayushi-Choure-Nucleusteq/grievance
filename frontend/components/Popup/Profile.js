@@ -1,26 +1,23 @@
 import React from "react";
 import "../Styles/Profile.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  const storedData = JSON.parse(sessionStorage.getItem("loginData")) || {};
+  const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
   const responseData = storedData.responseData || {};
   //   if (!user) return null;
   const navigate = useNavigate();
 
   const onClose = () => {
-    navigate('/TicketTable');
-  }
-
-  const logoutsession = () => {
-    sessionStorage.removeItem('loginData');
-    navigate('/');
-  }
+    navigate("/TicketTable");
+  };
 
   return (
     <div className="profile-modal">
       <div className="profile-content">
-      <button className="close-button" onClick={onClose}>X</button>
+        <button className="close-button" onClick={onClose}>
+          X
+        </button>
         <h2 className="profile">Profile</h2>
         <div className="profile-field">
           <strong>Name:</strong> {responseData.name}
@@ -34,10 +31,6 @@ const Profile = () => {
         <div className="profile-field">
           <strong>Department:</strong> {responseData.deptName}
         </div>
-        {/* <div className="button-wrapper"> */}
-          {/* <button onClick={onClose}> X </button> */}
-          {/* <button className="button" onClick={logoutsession}>Logout</button> */}
-        {/* </div> */}
       </div>
     </div>
   );

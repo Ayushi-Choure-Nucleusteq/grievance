@@ -20,7 +20,7 @@
   }
 
   .profile-field strong {
-    flex-basis: 40%;    /* Allocating space for label */
+    flex-basis: 40%;
     font-size: larger;
 }
 
@@ -30,7 +30,6 @@
     text-align: left;
     display: flex;
     font-style: italic;
-    /* justify-content: space-between; */
   }
 
 button {
