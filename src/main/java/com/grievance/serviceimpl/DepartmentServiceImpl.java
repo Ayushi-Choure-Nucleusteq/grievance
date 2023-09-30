@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,11 @@ import com.grievance.service.DepartmentService;
  */
 @Service
 public final class DepartmentServiceImpl implements DepartmentService {
+    
+    /**
+     * Loggers.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentServiceImpl.class);
 
      /**
 	 * Repository for Department related operations.
@@ -44,14 +51,22 @@ public final class DepartmentServiceImpl implements DepartmentService {
 	@Override
 	public DepartmentOutDto createDepartment(
 			final DepartmentDto deptDto) {
+	    LOGGER.info("Attempting to create a new "
+	            + "department with name: {}", deptDto.getDeptName());
+
 		Department existingDept = deptRepo
 			.findByDeptName(deptDto.getDeptName());
 		if (Objects.nonNull(existingDept)) {
+		    LOGGER.error("Failed to create department. "
+		            + "Department with name {} already exists."
+		            , deptDto.getDeptName());
 			throw new RecordAlreadyExistException(
 			  "Department with this name already exists.");
 		}
 		Department dept = conversion.departmentDtoToEntity(deptDto);
 		Department savedDept = deptRepo.save(dept);
+		LOGGER.info("Successfully created department "
+		        + "with name: {}", savedDept.getDeptName());
 		return conversion.departmentToOutDto(savedDept);
 	}
 
@@ -62,8 +77,10 @@ public final class DepartmentServiceImpl implements DepartmentService {
 	 */
 	@Override
 	public List<DepartmentOutDto> getAllDepts() {
+	    LOGGER.info("Fetching all departments from the database");
 		List<Department> dept = deptRepo.findAll();
-		if (Objects.isNull(dept)) {
+		if (Objects.isNull(dept) || dept.isEmpty()) {
+		    LOGGER.info("No departments found in the database");
 			throw new ResourceNotFoundException(
 					"No department exists");
 		}
@@ -73,6 +90,8 @@ public final class DepartmentServiceImpl implements DepartmentService {
 					.departmentToOutDto(department);
 			deptDtos.add(deptDto);
 		}
+		LOGGER.info("Successfully fetched {} "
+		        + "departments", deptDtos.size());
 		return deptDtos;
 	}
 
@@ -84,10 +103,12 @@ public final class DepartmentServiceImpl implements DepartmentService {
 	 */
 	@Override
 	public List<DepartmentOutDto> getAllDeptsPage(final Integer pageNo) {
+	    LOGGER.info("Fetching all departments from the database pagination");
 		final Integer pageSize = 8;
 		Page<Department> dept = deptRepo.findAll(
 		        PageRequest.of(pageNo, pageSize));
-		if (Objects.isNull(dept)) {
+		if (Objects.isNull(dept) || dept.isEmpty()) {
+		    LOGGER.info("No departments found in the database");
 			throw new ResourceNotFoundException(
 					"No department exists");
 		}
@@ -97,6 +118,8 @@ public final class DepartmentServiceImpl implements DepartmentService {
 					.departmentToOutDto(department);
 			deptDtos.add(deptDto);
 		}
+		LOGGER.info("Successfully fetched {} "
+                + "departments", deptDtos.size());
 		return deptDtos;
 	}
 
@@ -107,12 +130,18 @@ public final class DepartmentServiceImpl implements DepartmentService {
 	 */
 	@Override
 	public void deleteDept(final DepartmentDto deptDto) {
+	    LOGGER.info("Initiating request to delete department"
+	            + " with name: {}", deptDto.getDeptName());
 		Department dept = deptRepo.findByDeptName(
 				deptDto.getDeptName());
 		if (Objects.isNull(dept)) {
+		    LOGGER.error("No department found with"
+		            + " the name: {}", deptDto.getDeptName());
 			throw new ResourceNotFoundException(
 				"Department with this name does not exists");
 		}
+		LOGGER.info("Successfully deleted department "
+		        + "with name: {}", deptDto.getDeptName());
 		deptRepo.delete(dept);
 	}
 

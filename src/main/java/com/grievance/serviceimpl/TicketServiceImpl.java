@@ -306,6 +306,8 @@ public final class TicketServiceImpl implements TicketService {
 
 		if (ticketDto.getStatus().equals(TicketStatus.RESOLVED)
 				&& Objects.isNull(ticketDto.getComments())) {
+		    LOGGER.warn("Attempt to set ticket status to "
+		            + "RESOLVED without adding comments.");
 			throw new
 			CannotEditTicketException(
 			 "There must be a comment to resolve");
@@ -318,6 +320,7 @@ public final class TicketServiceImpl implements TicketService {
 		ticket.get().setStatus(ticketDto.getStatus());
 		Comment newComment = new Comment();
 		if (Objects.nonNull(ticketDto.getComments())) {
+		LOGGER.info("Updated comment entity for ticket ID: {}", id);    
 		newComment.setContent(ticketDto.getComments());
 		newComment.setCreationTime(updatedDate);
 		newComment.setMemberEmail(member.getEmail());
@@ -327,6 +330,7 @@ public final class TicketServiceImpl implements TicketService {
 		ticket.get().setTicketId(ticket.get().getTicketId());
 		}
 		Ticket updatedTicket = ticketRepo.save(ticket.get());
+		LOGGER.info("Successfully updated ticket with ID: {}", id);
 
 		return conversion.ticketToOutDto(updatedTicket);
 	}

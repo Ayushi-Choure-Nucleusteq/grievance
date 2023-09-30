@@ -133,7 +133,7 @@ public class MemberController {
 		memberService.deleteMember(email);
 		LOGGER.info("Member with email: {} deleted successfully.",
 				email);
-		return new ResponseEntity<>("Member Deleted",
+		return new ResponseEntity<>("User Deleted",
 				HttpStatus.OK);
 	}
 

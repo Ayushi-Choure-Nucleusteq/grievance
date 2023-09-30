@@ -187,6 +187,7 @@ public class TicketServiceTest {
 		
 		@Test
 		public void testGetAllTicketsAuth_NoTicketsFound() {
+		    when(memberRepo.findByEmail(ticketDto.getMember().getEmail())).thenReturn(testMember);
 		    when(ticketRepo.findAll(any(Pageable.class))).thenReturn(Page.empty());
 
 		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false, 0));
