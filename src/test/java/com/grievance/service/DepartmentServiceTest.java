@@ -84,9 +84,9 @@ class DepartmentServiceTest {
     public void testGetAllDepts_Empty() {
         when(deptRepo.findAll()).thenReturn(new ArrayList<>());
 
-        List<DepartmentOutDto> result = departmentService.getAllDepts();
+//        List<DepartmentOutDto> result = departmentService.getAllDepts();
 
-        assertEquals(0, result.size());
+        assertThrows(ResourceNotFoundException.class, () -> departmentService.getAllDepts());
     }
 
     @Test
@@ -107,9 +107,7 @@ class DepartmentServiceTest {
 
         when(deptRepo.findAll(any(PageRequest.class))).thenReturn(departmentPage);
 
-        List<DepartmentOutDto> result = departmentService.getAllDeptsPage(0);
-
-        assertEquals(0, result.size());
+        assertThrows(ResourceNotFoundException.class, () -> departmentService.getAllDeptsPage(0));
     }
 
     @Test
