@@ -35,7 +35,8 @@ public class MemberServiceImpl implements MemberService {
     /**
      * Loggers.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(MemberServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(MemberServiceImpl.class);
 
      /**
 	 * Repository for member related operations.
@@ -77,8 +78,8 @@ public class MemberServiceImpl implements MemberService {
 		Member existingMember = memberRepo.findByEmail(
 				memberDto.getEmail());
 		if (Objects.nonNull(existingMember)) {
-		    LOGGER.error("A member with email {} already exists."
-		            , memberDto.getEmail());
+		    LOGGER.error("A member with email {} already"
+		            + "exists.", memberDto.getEmail());
 			throw new RecordAlreadyExistException(
 			  "A member with this email already exists.");
 		}
@@ -87,8 +88,8 @@ public class MemberServiceImpl implements MemberService {
 				memberDto.getDepartment().getDeptName());
 
 		if (Objects.isNull(existingDept)) {
-		    LOGGER.error("Department with name {} does not exist."
-		            , memberDto.getDepartment().getDeptName());
+		    LOGGER.error("Department with name {} does not"
+		      + " exist.", memberDto.getDepartment().getDeptName());
 			throw new ResourceNotFoundException(
 			  "Department with this name does not exist.");
 		}
@@ -99,8 +100,8 @@ public class MemberServiceImpl implements MemberService {
 				|| (!decode.decodePassword(memberDto.
 					getPassword()).matches(passPattern))) {
             LOGGER.warn("Provided password for member {} "
-                    + "doesn't match the required pattern."
-                    , memberDto.getEmail());
+                    + "doesn't match the required "
+                    + "pattern.", memberDto.getEmail());
 			throw new IllegalArgumentException(
 					"Password not acceptable");
 		}
@@ -138,8 +139,8 @@ public class MemberServiceImpl implements MemberService {
 					.memberToOutDto(member2);
 			memberDtos.add(memberDto);
 		}
-		LOGGER.info("Successfully fetched {} members for page number: {}"
-		        , memberDtos.size(), pageNo);
+		LOGGER.info("Successfully fetched {} members for page "
+		        + "number: {}", memberDtos.size(), pageNo);
 		return memberDtos;
 	}
 
@@ -153,8 +154,8 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public final MemberOutDto loginMember(final LoginDto loginDto)
 			throws UnauthorizedException {
-	    LOGGER.info("Initiating login request for email: {}"
-	            , loginDto.getEmail());
+	    LOGGER.info("Initiating login request for "
+	            + "email: {}", loginDto.getEmail());
 		Member member = memberRepo.findByEmail(loginDto.getEmail());
 		if (Objects.isNull(member)) {
 		    LOGGER.error("Login failed. No member found "
@@ -171,17 +172,19 @@ public class MemberServiceImpl implements MemberService {
 		    LOGGER.warn("Login attempt with invalid credentials "
 		            + "for email: {}", loginDto.getEmail());
 			throw new UnauthorizedException(
-					"Invalid Credentials!");
+					"Invalid Password!");
 		}
 		MemberOutDto memberDto = conversion.memberToOutDto(member);
 		if (!member.getIsLoggedIn()) {
 			memberDto.setIsLoggedIn(true);
 			member.setIsLoggedIn(true);
 			memberRepo.save(member);
-			LOGGER.info("First Login successful for email: {}.", loginDto.getEmail());
+			LOGGER.info("First Login successful"
+			        + " for email: {}.", loginDto.getEmail());
 		} else {
 			memberDto.setIsLoggedIn(false);
-			LOGGER.info("Nth Login successful for email: {}.", loginDto.getEmail());
+			LOGGER.info("Nth Login successful "
+			        + "for email: {}.", loginDto.getEmail());
 		}
 		return memberDto;
 	}
@@ -221,7 +224,8 @@ public class MemberServiceImpl implements MemberService {
 		}
 		member.setPassword(changePasswordDto.getNewPassword());
 		member = memberRepo.save(member);
-		LOGGER.info("Password successfully changed for email: {}", email);
+		LOGGER.info("Password successfully changed"
+		        + " for email: {}", email);
 		MemberOutDto memberDto = conversion.memberToOutDto(member);
 		return memberDto;
 	}

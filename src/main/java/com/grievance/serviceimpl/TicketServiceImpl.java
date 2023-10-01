@@ -41,7 +41,8 @@ public final class TicketServiceImpl implements TicketService {
     /**
      * Loggers.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TicketServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(TicketServiceImpl.class);
 
     /** Repository for ticket-related operations. */
     @Autowired
@@ -173,6 +174,10 @@ public final class TicketServiceImpl implements TicketService {
 			tickets = (Page<Ticket>) ticketRepo.findByMember(member,
 			  PageRequest.of(pageNo, pageSize, Sort.by(
 					  "status")));
+			if (tickets.isEmpty()) {
+			    LOGGER.warn("No Personal tickets found");
+	            throw new ResourceNotFoundException("No Ticket found.");
+			}
 			for (Ticket ticket : tickets) {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}
@@ -234,6 +239,10 @@ public final class TicketServiceImpl implements TicketService {
 					findByMemberAndStatus(
 			member.getId(), status, PageRequest.of(
 				pageNo, pageSize, Sort.by("status")));
+			if (tickets.isEmpty()) {
+                LOGGER.warn("No Personal tickets found");
+                throw new ResourceNotFoundException("No Ticket found.");
+            }
 			for (Ticket ticket : tickets) {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}

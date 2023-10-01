@@ -28,7 +28,8 @@ public final class DepartmentServiceImpl implements DepartmentService {
     /**
      * Loggers.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(DepartmentServiceImpl.class);
 
      /**
 	 * Repository for Department related operations.
@@ -58,8 +59,8 @@ public final class DepartmentServiceImpl implements DepartmentService {
 			.findByDeptName(deptDto.getDeptName());
 		if (Objects.nonNull(existingDept)) {
 		    LOGGER.error("Failed to create department. "
-		            + "Department with name {} already exists."
-		            , deptDto.getDeptName());
+		            + "Department with name {} already"
+		            + "exists.", deptDto.getDeptName());
 			throw new RecordAlreadyExistException(
 			  "Department with this name already exists.");
 		}
@@ -103,7 +104,8 @@ public final class DepartmentServiceImpl implements DepartmentService {
 	 */
 	@Override
 	public List<DepartmentOutDto> getAllDeptsPage(final Integer pageNo) {
-	    LOGGER.info("Fetching all departments from the database pagination");
+	    LOGGER.info("Fetching all departments from"
+	            + " the database pagination");
 		final Integer pageSize = 8;
 		Page<Department> dept = deptRepo.findAll(
 		        PageRequest.of(pageNo, pageSize));
