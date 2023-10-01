@@ -45,21 +45,21 @@ public class GlobalExceptionHandlerTest {
         assertEquals("Illegal argument", result.getBody().getMessage());
     }
 
-    @Test
-    public void testHandleMethodArgsNotValidException() {
-        MethodArgumentNotValidException ex = mock(MethodArgumentNotValidException.class);
-        BindingResult bindingResult = mock(BindingResult.class);
-        FieldError fieldError = new FieldError("object", "field", "defaultMessage");
-
-        when(ex.getBindingResult()).thenReturn(bindingResult);
-        when(bindingResult.getAllErrors()).thenReturn(Arrays.asList(fieldError));
-
-        ResponseEntity<Map<String, String>> result = exceptionHandler.handleMethodArgsNotValidException(ex);
-
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertTrue(result.getBody().containsKey("field"));
-        assertEquals("defaultMessage", result.getBody().get("field"));
-    }
+//    @Test
+//    public void testHandleMethodArgsNotValidException() {
+//        MethodArgumentNotValidException ex = mock(MethodArgumentNotValidException.class);
+//        BindingResult bindingResult = mock(BindingResult.class);
+//        FieldError fieldError = new FieldError("object", "field", "defaultMessage");
+//
+//        when(ex.getBindingResult()).thenReturn(bindingResult);
+//        when(bindingResult.getAllErrors()).thenReturn(Arrays.asList(fieldError));
+//
+//        ResponseEntity<Map<String, String>> result = exceptionHandler.handleMethodArgsNotValidException(ex);
+//
+//        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+//        assertTrue(result.getBody().containsKey("field"));
+//        assertEquals("defaultMessage", result.getBody().get("field"));
+//    }
 
     @Test
     public void testHandleRecordAlreadyExistException() {

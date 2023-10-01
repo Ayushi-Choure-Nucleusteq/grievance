@@ -97,8 +97,8 @@ public class MemberServiceImpl implements MemberService {
 		       + "(?=.*\\d)(?=.*[@$!%*?&])"
 		       + "[A-Za-z\\d@$!%*?&]{8,}$";
 		if (Objects.isNull(memberDto.getPassword())
-				|| (!decode.decodePassword(memberDto.
-					getPassword()).matches(passPattern))) {
+				|| !decode.decodePassword(memberDto.
+					getPassword()).matches(passPattern)) {
             LOGGER.warn("Provided password for member {} "
                     + "doesn't match the required "
                     + "pattern.", memberDto.getEmail());
@@ -215,9 +215,9 @@ public class MemberServiceImpl implements MemberService {
 		final String passPattern = "^(?=.*[a-z])(?=.*[A-Z])"
 		    + "(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
 		if (Objects.isNull(changePasswordDto.getNewPassword())
-				|| (!decode.decodePassword(
+				|| !decode.decodePassword(
 					changePasswordDto.getNewPassword()).
-						matches(passPattern))) {
+						matches(passPattern)) {
 		    LOGGER.error("Change password request failed", email);
 			throw new IllegalArgumentException(
 					"Password not acceptable");
