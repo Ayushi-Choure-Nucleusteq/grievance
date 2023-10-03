@@ -126,7 +126,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public final List<MemberOutDto> getAllMember(final Integer pageNo) {
 	    LOGGER.info("Fetching members, page number: {}", pageNo);
-		final Integer pageSize = 8;
+		final Integer pageSize = 5;
 		Page<Member> members = memberRepo.findAll(
 		        PageRequest.of(pageNo, pageSize));
 		if (members.isEmpty()) {

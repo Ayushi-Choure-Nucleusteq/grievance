@@ -106,7 +106,7 @@ public final class DepartmentServiceImpl implements DepartmentService {
 	public List<DepartmentOutDto> getAllDeptsPage(final Integer pageNo) {
 	    LOGGER.info("Fetching all departments from"
 	            + " the database pagination");
-		final Integer pageSize = 8;
+		final Integer pageSize = 5;
 		Page<Department> dept = deptRepo.findAll(
 		        PageRequest.of(pageNo, pageSize));
 		if (Objects.isNull(dept) || dept.isEmpty()) {
