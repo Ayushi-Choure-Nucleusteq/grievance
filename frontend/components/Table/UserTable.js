@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Popup from "../Popup/Popup";
 import "../Styles/TicketTable.css";
@@ -16,7 +16,7 @@ function UserTable() {
   const requestData = storedData.requestData || {};
   const responseData = storedData.responseData || {};
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const endpoint = `${USER_API_URL}?pageNo=${pageNo}`;
       const response = await axios.get(endpoint, {
@@ -34,11 +34,11 @@ function UserTable() {
         return;
       }
     }
-  };
+  }, [pageNo, requestData.email, requestData.password]);
 
   useEffect(() => {
     fetchUsers();
-  }, [pageNo]);
+  }, [fetchUsers]);
 
   const handleDelete = async (userEmail) => {
     if (userEmail === requestData.email) {
@@ -102,7 +102,7 @@ function UserTable() {
             className="pagination-btn"
             onClick={() => setPageNo(pageNo - 1)}
           >
-            Previous
+            ⬅️Previous
           </button>
         )}
         {hasMore && (
@@ -110,7 +110,7 @@ function UserTable() {
             className="pagination-btn"
             onClick={() => setPageNo(pageNo + 1)}
           >
-            Next
+            Next ➡️
           </button>
         )}
       </div>

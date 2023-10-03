@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import "../Styles/ViewTicket.css";
 import Popup from "../Popup/Popup";
-import { isDisabled } from "@testing-library/user-event/dist/utils";
 
 const API_BASE_URL = "http://localhost:8000/api";
 
@@ -13,7 +12,7 @@ function ViewTicket() {
   const responseData = storedData.responseData || {};
 
   const [ticketDetails, setTicketDetails] = useState(null);
-//   const [isDisable, setIsDisable] = useState(false);
+  //   const [isDisable, setIsDisable] = useState(false);
   const [status, setStatus] = useState();
   const [inptcmt, setInptCmt] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -33,7 +32,7 @@ function ViewTicket() {
       console.log("Setting error: Please enter a comment.", showPopup);
       setErrorMsg("Please enter a comment.");
 
-      return; // Return immediately if no comment is provided
+      return;
     }
     const updatedData = {
       status: obj,
@@ -55,6 +54,7 @@ function ViewTicket() {
         setTicketDetails(response.data);
         setStatus(response.data.status);
         setSuccessMsg("Ticket Updated successfully");
+        setInptCmt("");
       })
       .catch((error) => {
         setErrorMsg(null);
@@ -68,11 +68,7 @@ function ViewTicket() {
       });
   };
 
-  useEffect(() => {
-    fetchTicketDetails();
-  }, [ticketId]);
-
-  const fetchTicketDetails = async () => {
+  const fetchTicketDetails = useCallback(async () => {
     setSuccessMsg(null);
     setErrorMsg(null);
     try {
@@ -93,7 +89,11 @@ function ViewTicket() {
         console.error("Error fetching ticket details:", error);
       }
     }
-  };
+  }, [ticketId, requestData.email, requestData.password]);
+
+  useEffect(() => {
+    fetchTicketDetails();
+  }, [fetchTicketDetails]);
 
   if (!ticketDetails) return <div>Loading...</div>;
 
@@ -112,7 +112,7 @@ function ViewTicket() {
       <div className="details-container">
         <div className="details-section">
           {/* Ticket Details Form */}
-          <form>
+          <form className="ticketform">
             <div className="form-group">
               <label>Created By:</label>
               <input type="text" readOnly value={ticketDetails.member} />
@@ -135,13 +135,13 @@ function ViewTicket() {
                   handleStatus(event.target.value);
                 }}
               >
+                <option value="OPEN">OPEN</option>
                 <option value="BEING_ADDRESSED">BEING ADDRESSED</option>
                 <option value="RESOLVED">RESOLVED</option>
-                <option value="OPEN">OPEN</option>
               </select>
             </div>
             <div className="form-group">
-              <label>Department:</label>
+              <label>Assigned To:</label>
               <input type="text" readOnly value={ticketDetails.department} />
             </div>
             <div className="form-group">

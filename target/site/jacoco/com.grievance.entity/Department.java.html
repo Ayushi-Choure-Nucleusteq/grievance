@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Department.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">grievance</a> &gt; <a href="index.source.html" class="el_package">com.grievance.entity</a> &gt; <span class="el_source">Department.java</span></div><h1>Department.java</h1><pre class="source lang-java linenums">package com.grievance.entity;
+
+import java.util.ArrayList;
+
+
+import java.util.List;
+import java.util.Objects;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+/**
+ * Represents a department in the system.
+ */
+@Entity
+@Table(name = &quot;department&quot;)
+public final class Department {
+
+    /**
+     * Unique identifier for department.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer deptId;
+
+    /**
+     * Department Name which must be unique.
+     */
+    @Column(unique = true)
+    private String deptName;
+
+    /**
+     * department having one to many relation with member.
+     */
+<span class="fc" id="L42">    @OneToMany(cascade = CascadeType.ALL,</span>
+            mappedBy = &quot;department&quot;, fetch = FetchType.LAZY)
+    private List&lt;Member&gt; members = new ArrayList&lt;&gt;();
+
+    /**
+     * department having one to many relation with ticket.
+     */
+    @OneToMany(cascade = CascadeType.ALL,
+    		mappedBy = &quot;department&quot;, fetch = FetchType.LAZY)
+    private List&lt;Ticket&gt; ticket;
+
+    /**
+     * Gets the department ID.
+     * @return the department ID.
+     */
+    public Integer getDeptId() {
+<span class="fc" id="L58">        return deptId;</span>
+    }
+
+    /**
+     * Sets the department ID.
+     * @param adeptId the department ID to set.
+     */
+    public void setDeptId(final Integer adeptId) {
+<span class="fc" id="L66">        this.deptId = adeptId;</span>
+<span class="fc" id="L67">    }</span>
+
+    /**
+     * Gets the department name.
+     * @return the department name.
+     */
+    public String getDeptName() {
+<span class="fc" id="L74">        return deptName;</span>
+    }
+
+    /**
+     * Sets the department name.
+     * @param adeptName the department name to set.
+     */
+    public void setDeptName(final String adeptName) {
+<span class="fc" id="L82">        this.deptName = adeptName;</span>
+<span class="fc" id="L83">    }</span>
+
+    /**
+     * Gets the list of members.
+     * @return the list of members.
+     */
+    public List&lt;Member&gt; getMembers() {
+<span class="fc" id="L90">        return members;</span>
+    }
+
+    /**
+     * Sets the list of members.
+     * @param amembers the list of members to set.
+     */
+    public void setMembers(final List&lt;Member&gt; amembers) {
+<span class="fc" id="L98">        this.members = amembers;</span>
+<span class="fc" id="L99">    }</span>
+
+    /**
+     * Gets the list of tickets.
+     * @return the list of tickets.
+     */
+    public List&lt;Ticket&gt; getTicket() {
+<span class="fc" id="L106">        return ticket;</span>
+    }
+
+    /**
+     * Sets the list of tickets.
+     * @param aticket the list of tickets to set.
+     */
+    public void setTicket(final List&lt;Ticket&gt; aticket) {
+<span class="fc" id="L114">        this.ticket = aticket;</span>
+<span class="fc" id="L115">    }</span>
+
+    /**
+     * Default constructor.
+     */
+    public Department() {
+<span class="fc" id="L121">        super();</span>
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * to string of object.
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L129">        return &quot;Department [deptId=&quot; + deptId</span>
+        	+ &quot;, deptName=&quot; + deptName + &quot;]&quot;;
+    }
+
+	@Override
+	public int hashCode() {
+<span class="fc" id="L135">		return Objects.hash(deptId, deptName);</span>
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">		if (this == obj) {</span>
+<span class="nc" id="L141">			return true;</span>
+		}
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">		if (obj == null) {</span>
+<span class="nc" id="L144">			return false;</span>
+		}
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">		if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L147">			return false;</span>
+		}
+<span class="fc" id="L149">		Department other = (Department) obj;</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">		return Objects.equals(deptId, other.deptId)</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">			&amp;&amp; Objects.equals(deptName, other.deptName);</span>
+	}
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MemberServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">grievance</a> &gt; <a href="index.source.html" class="el_package">com.grievance.serviceimpl</a> &gt; <span class="el_source">MemberServiceImpl.java</span></div><h1>MemberServiceImpl.java</h1><pre class="source lang-java linenums">package com.grievance.serviceimpl;
+
+import java.util.ArrayList;
+
+import java.util.List;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import com.grievance.entity.Department;
+import com.grievance.entity.Member;
+import com.grievance.exception.RecordAlreadyExistException;
+import com.grievance.exception.ResourceNotFoundException;
+import com.grievance.exception.UnauthorizedException;
+import com.grievance.indto.ChangePasswordDto;
+import com.grievance.indto.LoginDto;
+import com.grievance.indto.MemberDto;
+import com.grievance.outdto.MemberOutDto;
+import com.grievance.repository.DepartmentRepo;
+import com.grievance.repository.MemberRepo;
+import com.grievance.service.MemberService;
+
+/**
+ * MemberServiceImpl Service Implementation Class. Implements the business
+ * operations defined in MemberService.
+ */
+@Service
+<span class="fc" id="L33">public class MemberServiceImpl implements MemberService {</span>
+    
+    /**
+     * Loggers.
+     */
+<span class="fc" id="L38">    private static final Logger LOGGER = LoggerFactory</span>
+<span class="fc" id="L39">            .getLogger(MemberServiceImpl.class);</span>
+
+     /**
+	 * Repository for member related operations.
+	 */
+	@Autowired
+	private MemberRepo memberRepo;
+
+	/**
+	 * Repository for department related operations.
+	 */
+	@Autowired
+	private DepartmentRepo deptRepo;
+
+	/**
+	 * Conversion for conversion from indto to entity to outdto.
+	 */
+	@Autowired
+	private Conversion conversion;
+
+	/**
+	 * Decode password.
+	 */
+	@Autowired
+	private DecodePassword decode;
+
+	/**
+	 * Creates a new member in the system.
+	 *
+	 * @param memberDto Member details.
+	 * @return Details of the created member.
+	 */
+	@Override
+	public final MemberOutDto createMemberAuth(
+			final MemberDto memberDto) {
+
+<span class="fc" id="L75">	    LOGGER.info(&quot;Attempting to create a new &quot;</span>
+	            + &quot;member with email: {}&quot;,
+<span class="fc" id="L77">	            memberDto.getEmail());</span>
+<span class="fc" id="L78">		Member existingMember = memberRepo.findByEmail(</span>
+<span class="fc" id="L79">				memberDto.getEmail());</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">		if (Objects.nonNull(existingMember)) {</span>
+<span class="fc" id="L81">		    LOGGER.error(&quot;A member with email {} already&quot;</span>
+<span class="fc" id="L82">		            + &quot;exists.&quot;, memberDto.getEmail());</span>
+<span class="fc" id="L83">			throw new RecordAlreadyExistException(</span>
+			  &quot;A member with this email already exists.&quot;);
+		}
+
+<span class="fc" id="L87">		Department existingDept = deptRepo.findByDeptName(</span>
+<span class="fc" id="L88">				memberDto.getDepartment().getDeptName());</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">		if (Objects.isNull(existingDept)) {</span>
+<span class="fc" id="L91">		    LOGGER.error(&quot;Department with name {} does not&quot;</span>
+<span class="fc" id="L92">		      + &quot; exist.&quot;, memberDto.getDepartment().getDeptName());</span>
+<span class="fc" id="L93">			throw new ResourceNotFoundException(</span>
+			  &quot;Department with this name does not exist.&quot;);
+		}
+<span class="fc" id="L96">		final String passPattern = &quot;^(?=.*[a-z])(?=.*[A-Z])&quot;</span>
+		       + &quot;(?=.*\\d)(?=.*[@$!%*?&amp;])&quot;
+		       + &quot;[A-Za-z\\d@$!%*?&amp;]{8,}$&quot;;
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		if (Objects.isNull(memberDto.getPassword())</span>
+<span class="fc" id="L100">				|| !decode.decodePassword(memberDto.</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">					getPassword()).matches(passPattern)) {</span>
+<span class="fc" id="L102">            LOGGER.warn(&quot;Provided password for member {} &quot;</span>
+                    + &quot;doesn't match the required &quot;
+<span class="fc" id="L104">                    + &quot;pattern.&quot;, memberDto.getEmail());</span>
+<span class="fc" id="L105">			throw new IllegalArgumentException(</span>
+					&quot;Password not acceptable&quot;);
+		}
+<span class="fc" id="L108">		Member member = conversion.memberdtoToEntity(memberDto);</span>
+<span class="fc" id="L109">		member.setIsLoggedIn(false);</span>
+<span class="fc" id="L110">		member.setDepartment(existingDept);</span>
+<span class="fc" id="L111">		Member savedMember = memberRepo.save(member);</span>
+<span class="fc" id="L112">		 LOGGER.info(&quot;Successfully created member with &quot;</span>
+<span class="fc" id="L113">		         + &quot;email: {}&quot;, memberDto.getEmail());</span>
+
+<span class="fc" id="L115">		MemberOutDto memberOutDto = conversion.memberToOutDto(</span>
+				savedMember);
+<span class="fc" id="L117">		return memberOutDto;</span>
+	}
+
+	/**
+	 * Fetches all members in the system.
+	 *
+	 *@param pageNo
+	 * @return List of members.
+	 */
+	@Override
+	public final List&lt;MemberOutDto&gt; getAllMember(final Integer pageNo) {
+<span class="fc" id="L128">	    LOGGER.info(&quot;Fetching members, page number: {}&quot;, pageNo);</span>
+<span class="fc" id="L129">		final Integer pageSize = 8;</span>
+<span class="fc" id="L130">		Page&lt;Member&gt; members = memberRepo.findAll(</span>
+<span class="fc" id="L131">		        PageRequest.of(pageNo, pageSize));</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">		if (members.isEmpty()) {</span>
+<span class="fc" id="L133">		    LOGGER.warn(&quot;No members found for page number: {}&quot;, pageNo);</span>
+<span class="fc" id="L134">			throw new ResourceNotFoundException(&quot;No User exists.&quot;);</span>
+		}
+<span class="fc" id="L136">		List&lt;MemberOutDto&gt; memberDtos = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		for (Member member2 : members) {</span>
+<span class="fc" id="L138">			MemberOutDto memberDto = conversion</span>
+<span class="fc" id="L139">					.memberToOutDto(member2);</span>
+<span class="fc" id="L140">			memberDtos.add(memberDto);</span>
+<span class="fc" id="L141">		}</span>
+<span class="fc" id="L142">		LOGGER.info(&quot;Successfully fetched {} members for page &quot;</span>
+<span class="fc" id="L143">		        + &quot;number: {}&quot;, memberDtos.size(), pageNo);</span>
+<span class="fc" id="L144">		return memberDtos;</span>
+	}
+
+	/**
+	 * Logs a member in after checking their credentials.
+	 *
+	 * @param loginDto Login details.
+	 * @return Details of the logged-in member.
+	 * @throws UnauthorizedException If credentials are invalid.
+	 */
+	@Override
+	public final MemberOutDto loginMember(final LoginDto loginDto)
+			throws UnauthorizedException {
+<span class="fc" id="L157">	    LOGGER.info(&quot;Initiating login request for &quot;</span>
+<span class="fc" id="L158">	            + &quot;email: {}&quot;, loginDto.getEmail());</span>
+<span class="fc" id="L159">		Member member = memberRepo.findByEmail(loginDto.getEmail());</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">		if (Objects.isNull(member)) {</span>
+<span class="fc" id="L161">		    LOGGER.error(&quot;Login failed. No member found &quot;</span>
+<span class="fc" id="L162">		            + &quot;with email: {}&quot;, loginDto.getEmail());</span>
+<span class="fc" id="L163">			throw new ResourceNotFoundException(</span>
+					&quot;User with email does not exist.&quot;);
+		}
+<span class="fc" id="L166">		String decodedInPass = decode.decodePassword(</span>
+<span class="fc" id="L167">				loginDto.getPassword());</span>
+<span class="fc" id="L168">		String decodedDbPass = decode.decodePassword(</span>
+<span class="fc" id="L169">				member.getPassword());</span>
+
+<span class="fc bfc" id="L171" title="All 2 branches covered.">		if (!decodedInPass.equals(decodedDbPass)) {</span>
+<span class="fc" id="L172">		    LOGGER.warn(&quot;Login attempt with invalid credentials &quot;</span>
+<span class="fc" id="L173">		            + &quot;for email: {}&quot;, loginDto.getEmail());</span>
+<span class="fc" id="L174">			throw new UnauthorizedException(</span>
+					&quot;Invalid Password!&quot;);
+		}
+<span class="fc" id="L177">		MemberOutDto memberDto = conversion.memberToOutDto(member);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">		if (!member.getIsLoggedIn()) {</span>
+<span class="fc" id="L179">			memberDto.setIsLoggedIn(true);</span>
+<span class="fc" id="L180">			member.setIsLoggedIn(true);</span>
+<span class="fc" id="L181">			memberRepo.save(member);</span>
+<span class="fc" id="L182">			LOGGER.info(&quot;First Login successful&quot;</span>
+<span class="fc" id="L183">			        + &quot; for email: {}.&quot;, loginDto.getEmail());</span>
+		} else {
+<span class="fc" id="L185">			memberDto.setIsLoggedIn(false);</span>
+<span class="fc" id="L186">			LOGGER.info(&quot;Nth Login successful &quot;</span>
+<span class="fc" id="L187">			        + &quot;for email: {}.&quot;, loginDto.getEmail());</span>
+		}
+<span class="fc" id="L189">		return memberDto;</span>
+	}
+
+	/**
+	 * Changes the password of a member.
+	 *
+	 * @param changePasswordDto New password details.
+	 * @param email             Member's email.
+	 * @param password          Member's old password.
+	 * @return Updated member details.
+	 * @throws UnauthorizedException If old password is invalid.
+	 */
+	@Override
+	public final MemberOutDto changePassword(
+			final ChangePasswordDto changePasswordDto,
+			final String email,
+			final String password) throws UnauthorizedException {
+<span class="fc" id="L206">	    LOGGER.info(&quot;Initiating password change request &quot;</span>
+	            + &quot;for email: {}&quot;, email);
+<span class="fc" id="L208">		Member member = memberRepo.findByEmail(email);</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">		if (!member.getPassword().equals(</span>
+<span class="fc" id="L210">			  changePasswordDto.getOldPassword())) {</span>
+<span class="fc" id="L211">		    LOGGER.error(&quot;Change password request failed&quot;, email);</span>
+<span class="fc" id="L212">			throw new UnauthorizedException(</span>
+				&quot;Invalid Credentials for Old Password&quot;);
+		}
+<span class="fc" id="L215">		final String passPattern = &quot;^(?=.*[a-z])(?=.*[A-Z])&quot;</span>
+		    + &quot;(?=.*\\d)(?=.*[@$!%*?&amp;])[A-Za-z\\d@$!%*?&amp;]{8,}$&quot;;
+<span class="fc bfc" id="L217" title="All 2 branches covered.">		if (Objects.isNull(changePasswordDto.getNewPassword())</span>
+<span class="fc" id="L218">				|| !decode.decodePassword(</span>
+<span class="fc" id="L219">					changePasswordDto.getNewPassword()).</span>
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">						matches(passPattern)) {</span>
+<span class="fc" id="L221">		    LOGGER.error(&quot;Change password request failed&quot;, email);</span>
+<span class="fc" id="L222">			throw new IllegalArgumentException(</span>
+					&quot;Password not acceptable&quot;);
+		}
+<span class="fc" id="L225">		member.setPassword(changePasswordDto.getNewPassword());</span>
+<span class="fc" id="L226">		member = memberRepo.save(member);</span>
+<span class="fc" id="L227">		LOGGER.info(&quot;Password successfully changed&quot;</span>
+		        + &quot; for email: {}&quot;, email);
+<span class="fc" id="L229">		MemberOutDto memberDto = conversion.memberToOutDto(member);</span>
+<span class="fc" id="L230">		return memberDto;</span>
+	}
+
+
+	/**
+	 * Business logic to delete a Member.
+	 *
+	 * @param email  the department data transfer object
+	 */
+	@Override
+	public final void deleteMember(final String email) {
+<span class="fc" id="L241">	    LOGGER.info(&quot;Initiating delete request for &quot;</span>
+	            + &quot;member with email: {}&quot;, email);
+
+<span class="fc" id="L244">		Member member = memberRepo.findByEmail(</span>
+				email);
+<span class="fc bfc" id="L246" title="All 2 branches covered.">		if (Objects.isNull(member)) {</span>
+<span class="fc" id="L247">		    LOGGER.error(&quot;Delete request failed.&quot;</span>
+		            + &quot;No member found with email: {}&quot;, email);
+<span class="fc" id="L249">			throw new ResourceNotFoundException(</span>
+				&quot;Member with this email does not exists&quot;);
+		}
+<span class="fc" id="L252">		memberRepo.delete(member);</span>
+<span class="fc" id="L253">		LOGGER.info(&quot;Successfully deleted member &quot;</span>
+		        + &quot;with email: {}&quot;, email);
+<span class="fc" id="L255">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

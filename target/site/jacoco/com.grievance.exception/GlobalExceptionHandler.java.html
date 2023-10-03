@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">grievance</a> &gt; <a href="index.source.html" class="el_package">com.grievance.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.grievance.exception;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
+/**
+ * Global exception handler class to handle application-specific exceptions.
+ */
+@ControllerAdvice
+<span class="fc" id="L20">public final class GlobalExceptionHandler {</span>
+
+    /**
+     * Handle resource not found exceptions.
+     *
+     * @param ex the exception to handle
+     * @return the response entity with the error message and HTTP status
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleResourceNotFound(
+    		final ResourceNotFoundException ex) {
+<span class="fc" id="L31">        return new ResponseEntity&lt;&gt;(new ErrorResponse(ex.getMessage()),</span>
+        		HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handle illegal argument exceptions.
+     *
+     * @param ex the exception to handle
+     * @return the response entity with the error message and HTTP status
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity&lt;ErrorResponse&gt;
+    handleIllegalArgumentException(
+    		final IllegalArgumentException ex) {
+<span class="fc" id="L45">        return new ResponseEntity&lt;&gt;(new ErrorResponse(</span>
+<span class="fc" id="L46">        		ex.getMessage()),</span>
+        		HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handle exceptions for records that already exist.
+     *
+     * @param ex the exception to handle
+     * @return the response entity with the error message and HTTP status
+     */
+    @ExceptionHandler(RecordAlreadyExistException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleRecordAlreadyExistException(
+            final RecordAlreadyExistException ex) {
+<span class="fc" id="L59">     return new ResponseEntity&lt;&gt;(new ErrorResponse(ex.getMessage()),</span>
+        		HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handle unauthorized exceptions.
+     *
+     * @param ex the exception to handle
+     * @return the response entity with the error message and HTTP status
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleUnauthorizedException(
+    		final UnauthorizedException ex) {
+<span class="fc" id="L72">        return new ResponseEntity&lt;&gt;(new ErrorResponse(ex.getMessage()),</span>
+        		HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handle exceptions related to ticket editing.
+     *
+     * @param ex the exception to handle
+     * @return the response entity with the error message and HTTP status
+     */
+    @ExceptionHandler(CannotEditTicketException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleCannotEditTicketException(
+            final CannotEditTicketException ex) {
+<span class="fc" id="L85">        return new ResponseEntity&lt;&gt;(new ErrorResponse(ex.getMessage()),</span>
+        		HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handle exceptions related to invalid input.
+     *
+     * @param ex the exception to handle
+     * @return the response entity with the error message and HTTP status
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity&lt;Map&lt;String, String&gt;&gt;
+    handleMethodArgsNotValidException(
+    		final MethodArgumentNotValidException ex) {
+<span class="nc" id="L99">		Map&lt;String, String&gt; resp = new HashMap&lt;String, String&gt;();</span>
+<span class="nc" id="L100">		ex.getBindingResult().getAllErrors().forEach((error) -&gt; {</span>
+
+<span class="nc" id="L102">			String fieldname = ((FieldError) error).getField();</span>
+<span class="nc" id="L103">			String message = error.getDefaultMessage();</span>
+<span class="nc" id="L104">			resp.put(fieldname, message);</span>
+<span class="nc" id="L105">		});</span>
+<span class="nc" id="L106">		return new ResponseEntity&lt;Map&lt;String, String&gt;&gt;(</span>
+				resp, HttpStatus.BAD_REQUEST);
+	}
+
+    /**
+     * Handle exceptions related to Constraint violation.
+     *
+     * @param ex the exception to handle
+     * @return the response entity with the error message and HTTP status
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleHttpMessageNotReadableException(
+            final HttpMessageNotReadableException ex) {
+        
+<span class="nc" id="L120">        ErrorResponse errorResponse = new ErrorResponse(</span>
+                &quot;Invalid input provided.&quot;);
+
+<span class="nc" id="L123">        return new ResponseEntity&lt;ErrorResponse&gt;(</span>
+                errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle exceptions related to constraint violations.
+     *
+     * @param ex the exception to handle
+     * @return the response entity with the error message and HTTP status
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity&lt;Map&lt;String, String&gt;&gt;
+    handleConstraintViolationException(
+            final ConstraintViolationException ex) {
+<span class="nc" id="L137">        Map&lt;String, String&gt; resp = new HashMap&lt;String, String&gt;();</span>
+
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        for (ConstraintViolation&lt;?&gt; violation : ex.getConstraintViolations()) {</span>
+<span class="nc" id="L140">            resp.put(violation.getPropertyPath()</span>
+<span class="nc" id="L141">                    .toString(), violation.getMessage());</span>
+<span class="nc" id="L142">        }</span>
+
+<span class="nc" id="L144">        return new ResponseEntity&lt;Map&lt;String, String&gt;&gt;(</span>
+                resp, HttpStatus.BAD_REQUEST);
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

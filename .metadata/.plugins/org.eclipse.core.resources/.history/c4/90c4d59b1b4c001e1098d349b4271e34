@@ -1,0 +1,189 @@
+package com.grievance.entity;
+
+import java.util.List;
+import java.util.Objects;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+/**
+ * Represents a member in the system. Each instance corresponds to a single
+ * member record in the database.
+ */
+@Entity
+public class Member {
+
+  /**
+   * Unique identifier for the member.
+   * Mapped to the primary key of the member table.
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  /**
+   * Name of the member.
+   */
+  private String name;
+
+  /**
+   * Email of the member.
+   */
+  @Column(unique = true)
+  private String email;
+
+  /**
+   * Password of the member.
+   */
+  private String password;
+
+  /**
+   * Role of the member. Preferably admin/Normal Member.
+   */
+  @Enumerated(EnumType.STRING)
+  private MemberRole role;
+  
+  Boolean isLoggedIn;
+
+  /**
+   * Department of the member belongs to.
+   */
+  @ManyToOne
+  private Department department;
+  
+  @OneToMany(cascade = CascadeType.ALL , mappedBy = "member" , fetch = FetchType.LAZY)
+  @JsonManagedReference
+  @JsonIgnore
+  private List<Ticket> ticket;
+
+  
+  public Member(Integer id, String name, String email, String password, MemberRole role, Department department,
+		List<Ticket> ticket) {
+	super();
+	this.id = id;
+	this.name = name;
+	this.email = email;
+	this.password = password;
+	this.role = role;
+	this.department = department;
+	this.ticket = ticket;
+}
+
+
+  @Override
+  public String toString() {
+      return "Member [id=" + id + ", name=" + name + ", email=" + email + ", role=" + role 
+          + ", departmentId=" + (department != null ? department.getDeptId() : "null")
+          + ", ticketCount=" + (ticket != null ? ticket.size() : 0) + "]";
+  }
+
+
+  /**
+   * Default constructor.
+   */
+  public Member() {}
+
+// Getter and Setter methods...
+
+  public Integer getMemberId() {
+    return id;
+  }
+
+  public void setMemberId(final Integer memberId) {
+    this.id = memberId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(final String name) {
+    this.name = name;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(final String email) {
+    this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(final String password) {
+    this.password = password;
+  }
+
+  public MemberRole getRole() {
+      return role;
+  }
+
+  public void setRole(final MemberRole role) {
+       this.role=role;
+  }
+
+  public Department getDepartment() {
+    return department;
+  }
+
+  public void setDepartment(final Department department) {
+    this.department = department;
+  }
+
+  @Override
+public int hashCode() {
+	return Objects.hash(department, email, id, name, password, role);
+}
+
+
+public Integer getId() {
+	return id;
+}
+
+
+public void setId(Integer id) {
+	this.id = id;
+}
+
+
+public Boolean getIsLoggedIn() {
+	return isLoggedIn;
+}
+
+
+public void setIsLoggedIn(Boolean isLoggedIn) {
+	this.isLoggedIn = isLoggedIn;
+}
+
+
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (obj == null)
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	Member other = (Member) obj;
+	return Objects.equals(department, other.department) && Objects.equals(email, other.email)
+			&& Objects.equals(id, other.id) && Objects.equals(name, other.name)
+			&& Objects.equals(password, other.password) && role == other.role;
+}
+
+
+}

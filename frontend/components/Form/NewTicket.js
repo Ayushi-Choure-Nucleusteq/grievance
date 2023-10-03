@@ -7,7 +7,6 @@ const API_BASE_URL = "http://localhost:8000/api";
 
 function NewTicket() {
   const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
-  const responseData = storedData.responseData || null;
   const requestData = storedData.requestData || {};
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -44,7 +43,12 @@ function NewTicket() {
     };
 
     fetchDepartments();
-  }, []);
+  }, [requestData.email, requestData.password]);
+
+  const checkTicketTitle = (ticketName) => {
+    const namePattern = /^[A-Z][a-zA-Z]{2,}/;
+    return namePattern.test(ticketName);
+  };
 
   const validateForm = () => {
     const validationErrors = {};
@@ -54,9 +58,18 @@ function NewTicket() {
     }
     if (!formData.ticketName) {
       validationErrors.ticketName = "Ticket Name cannot be empty.";
+    } else if (!checkTicketTitle(formData.ticketName.trim())) {
+      validationErrors.ticketName =
+        "Title should start with an uppercase letter and contain at least 3 letters.";
     }
-    if (!formData.description) {
+    if (!formData.description || formData.description.trim() === "") {
       validationErrors.description = "Description cannot be empty.";
+    } else {
+      const descriptionWords = formData.description.trim().split(" ").length;
+      if (descriptionWords < 3 || descriptionWords > 100) {
+        validationErrors.description =
+          "Description should be between 3 to 100 words.";
+      }
     }
     if (!formData.department) {
       validationErrors.department = "Department cannot be empty.";
@@ -94,17 +107,24 @@ function NewTicket() {
     if (Object.keys(validationErrors).length === 0) {
       setSuccessMessage("");
       try {
-        const response = await axios.post(
-          `${API_BASE_URL}/ticket/create`,
-          formData,
-          {
-            headers: {
-              email: requestData.email,
-              password: requestData.password,
-            },
-          }
-        );
+        await axios.post(`${API_BASE_URL}/ticket/create`, formData, {
+          headers: {
+            email: requestData.email,
+            password: requestData.password,
+          },
+        });
         setSuccessMessage("Ticket Added successfully!");
+        setFormData({
+          ticketType: "",
+          ticketName: "",
+          description: "",
+          status: "OPEN",
+          department: "",
+          comments: "",
+          member: {
+            email: requestData.email,
+          },
+        });
       } catch (error) {
         console.error("Error adding ticket:", error);
         if (

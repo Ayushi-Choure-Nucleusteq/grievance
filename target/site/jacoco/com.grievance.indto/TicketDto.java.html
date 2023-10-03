@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">grievance</a> &gt; <a href="index.source.html" class="el_package">com.grievance.indto</a> &gt; <span class="el_source">TicketDto.java</span></div><h1>TicketDto.java</h1><pre class="source lang-java linenums">package com.grievance.indto;
+
+import javax.validation.constraints.NotNull;
+
+import com.grievance.enums.TicketStatus;
+import com.grievance.enums.TicketType;
+
+/**
+ * Data Transfer Object representing a Ticket.
+ */
+public final class TicketDto {
+
+    /** Name of the ticket. */
+    private String ticketName;
+
+    /** Description of the ticket. */
+    private String description;
+
+    /** Status of the ticket. */
+    private TicketStatus status;
+
+    /** Creation date of the ticket. */
+    private String creationDate;
+
+    /** Date of the last update for the ticket. */
+    private String lastUpdateDate;
+
+    /** Comments related to the ticket. */
+    private String comments;
+
+    /** Type of the ticket. */
+    private TicketType ticketType;
+
+    /** Department associated with the ticket. */
+    private DepartmentDto department;
+
+    /** Member associated with the ticket. */
+    @NotNull(message = &quot;Member is required.&quot;)
+    private LoginDto member;
+
+    /**
+     * @return the ticket name.
+     */
+    public String getTicketName() {
+<span class="fc" id="L45">        return ticketName;</span>
+    }
+
+    /**
+     * Sets the ticket name.
+     *
+     * @param newTicketName the name to set.
+     */
+    public void setTicketName(final String newTicketName) {
+<span class="fc" id="L54">        this.ticketName = newTicketName;</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * @return the description.
+     */
+    public String getDescription() {
+<span class="fc" id="L61">        return description;</span>
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param newDescription the description to set.
+     */
+    public void setDescription(final String newDescription) {
+<span class="fc" id="L70">        this.description = newDescription;</span>
+<span class="fc" id="L71">    }</span>
+
+    /**
+     * @return the status.
+     */
+    public TicketStatus getStatus() {
+<span class="fc" id="L77">        return status;</span>
+    }
+
+    /**
+     * Sets the status.
+     *
+     * @param newStatus the status to set.
+     */
+    public void setStatus(final TicketStatus newStatus) {
+<span class="fc" id="L86">        this.status = newStatus;</span>
+<span class="fc" id="L87">    }</span>
+
+    /**
+     * @return the creation date.
+     */
+    public String getCreationDate() {
+<span class="fc" id="L93">        return creationDate;</span>
+    }
+
+    /**
+     * Sets the creation date.
+     *
+     * @param newCreationDate the creation date to set.
+     */
+    public void setCreationDate(final String newCreationDate) {
+<span class="fc" id="L102">        this.creationDate = newCreationDate;</span>
+<span class="fc" id="L103">    }</span>
+
+    /**
+     * @return the last update date.
+     */
+    public String getLastUpdateDate() {
+<span class="fc" id="L109">        return lastUpdateDate;</span>
+    }
+
+    /**
+     * Sets the last update date.
+     *
+     * @param newLastUpdateDate the last update date to set.
+     */
+    public void setLastUpdateDate(final String newLastUpdateDate) {
+<span class="fc" id="L118">        this.lastUpdateDate = newLastUpdateDate;</span>
+<span class="fc" id="L119">    }</span>
+
+    /**
+     * @return the ticket type.
+     */
+    public TicketType getTicketType() {
+<span class="fc" id="L125">        return ticketType;</span>
+    }
+
+    /**
+     * Sets the ticket type.
+     *
+     * @param newTicketType the type to set.
+     */
+    public void setTicketType(final TicketType newTicketType) {
+<span class="fc" id="L134">        this.ticketType = newTicketType;</span>
+<span class="fc" id="L135">    }</span>
+
+    /**
+     * @return the department.
+     */
+    public DepartmentDto getDepartment() {
+<span class="fc" id="L141">        return department;</span>
+    }
+
+    /**
+     * Sets the department.
+     *
+     * @param newDepartment the department to set.
+     */
+    public void setDepartment(final DepartmentDto newDepartment) {
+<span class="fc" id="L150">        this.department = newDepartment;</span>
+<span class="fc" id="L151">    }</span>
+
+    /**
+     * @return the member.
+     */
+    public LoginDto getMember() {
+<span class="fc" id="L157">        return member;</span>
+    }
+
+    /**
+     * Sets the member.
+     *
+     * @param newMember the member to set.
+     */
+    public void setMember(final LoginDto newMember) {
+<span class="fc" id="L166">        this.member = newMember;</span>
+<span class="fc" id="L167">    }</span>
+
+    /**
+     * @return the comments.
+     */
+    public String getComments() {
+<span class="fc" id="L173">        return comments;</span>
+    }
+
+    /**
+     * Sets the comments.
+     *
+     * @param newComments the comments to set.
+     */
+    public void setComments(final String newComments) {
+<span class="fc" id="L182">        this.comments = newComments;</span>
+<span class="fc" id="L183">    }</span>
+
+    /**
+     * Default constructor.
+     */
+    public TicketDto() {
+<span class="fc" id="L189">        super();</span>
+<span class="fc" id="L190">    }</span>
+
+    /**
+     * String of ticketDto object.
+     *
+     * @return the string representation of the object.
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L199">        return &quot;TicketDto [ticketName=&quot; + ticketName + &quot;, description=&quot;</span>
+    + description + &quot;, status=&quot; + status
+        		+ &quot;, creationDate=&quot; + creationDate
+        		+ &quot;, lastUpdateDate=&quot; + lastUpdateDate
+        		+ &quot;, ticketType=&quot; + ticketType
+        		+ &quot;, department=&quot; + department
+        		+ &quot;, member=&quot; + member + &quot;]&quot;;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

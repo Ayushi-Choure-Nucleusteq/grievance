@@ -36,3 +36,9 @@ nav ul li {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.active {
+  background-color: #125ee1;
+  font-weight: bold;
+}
+

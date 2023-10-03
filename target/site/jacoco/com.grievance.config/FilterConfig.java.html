@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FilterConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">grievance</a> &gt; <a href="index.source.html" class="el_package">com.grievance.config</a> &gt; <span class="el_source">FilterConfig.java</span></div><h1>FilterConfig.java</h1><pre class="source lang-java linenums">/**
+ * Configuration class to set up custom filters.
+ */
+package com.grievance.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.grievance.filter.Authentication;
+import com.grievance.repository.MemberRepo;
+
+@Configuration
+public class FilterConfig {
+
+    /** Repository for Member entities. */
+    @Autowired
+    private MemberRepo memberRepo;
+
+    /**
+     * Constructor for FilterConfig.
+     *
+     * @param amemberRepo the member repository
+     */
+    public FilterConfig(final MemberRepo amemberRepo) {
+<span class="nc" id="L27">        super();</span>
+<span class="nc" id="L28">        this.memberRepo = amemberRepo;</span>
+<span class="nc" id="L29">    }</span>
+
+    /**
+     * Bean configuration for the Authentication filter.
+     *
+     * @return a FilterRegistrationBean for the Authentication filter.
+     */
+    @Bean
+    public FilterRegistrationBean&lt;Authentication&gt; registrationBeanAdmin() {
+<span class="nc" id="L38">        FilterRegistrationBean&lt;Authentication&gt; registrationBean =</span>
+                new FilterRegistrationBean&lt;Authentication&gt;();
+<span class="nc" id="L40">        registrationBean.setFilter(new Authentication(memberRepo));</span>
+<span class="nc" id="L41">        registrationBean.addUrlPatterns(&quot;/*&quot;);</span>
+<span class="nc" id="L42">        return registrationBean;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

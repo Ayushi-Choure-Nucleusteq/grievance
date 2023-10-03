@@ -109,6 +109,17 @@ button {
   transition: background-color 0.3s;
 }
 
+.addbutton:disabled {
+  background-color: #454c79;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: calc(100% - 20px);
+}
+
 .login_btn {
   margin-top: 20px;
 }

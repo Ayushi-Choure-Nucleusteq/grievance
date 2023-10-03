@@ -1,0 +1,179 @@
+package com.grievance.serviceimpl;
+
+import java.util.List;
+
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.grievance.entity.Department;
+import com.grievance.entity.Member;
+import com.grievance.entity.MemberRole;
+import com.grievance.exception.ResourceNotFoundException;
+import com.grievance.payloads.DepartmentDto;
+import com.grievance.payloads.LoginDto;
+import com.grievance.payloads.MemberDto;
+import com.grievance.repository.DepartmentRepo;
+import com.grievance.repository.MemberRepo;
+import com.grievance.service.MemberService;
+
+
+/**
+ * MemberServiceImpl Service Implementation Class.
+ * 
+ * <p>Implements the business operations defined in MemberService.</p>
+ */
+@Service
+public class MemberServiceImpl implements MemberService {
+
+  @Autowired
+  private MemberRepo memberRepo;
+  
+  @Autowired
+  private DepartmentRepo deptRepo;
+
+
+  @Override
+  public final MemberDto createMember(MemberDto memberDto) {
+      if (memberDto == null || memberDto.getDepartment() == null || memberDto.getDepartment().getDeptName() == null) {
+          throw new IllegalArgumentException("Invalid MemberDto or Department provided.");
+      }
+      Department existingDept = deptRepo.findByDeptName(memberDto.getDepartment().getDeptName());
+
+      if (existingDept == null) {
+          throw new ResourceNotFoundException("Department with name " + memberDto.getDepartment().getDeptName() + " does not exist.");
+      }
+
+      Member member = this.memberDtoToMember(memberDto);
+      member.setIsLoggedIn(false);
+      Member savedMember = this.memberRepo.save(member);
+      return this.memberToMemberDto(savedMember);
+  }
+
+  
+  @Override
+  public List<MemberDto> getAllmembers(){
+	  List<Member> member=this.memberRepo.findAll();
+	  if (member.isEmpty()) {
+          throw new ResourceNotFoundException("No members found.");
+      }
+	  return member.stream().map(mem-> this.memberToMemberDto(mem)).collect(Collectors.toList());
+  }
+
+  
+  
+  @Override
+  public MemberDto loginMember(LoginDto loginDto) {
+    Member member = this.memberRepo.findByEmail(loginDto.getEmail());
+    if (member == null) {
+        throw new ResourceNotFoundException("Member with email " + loginDto.getEmail() + " does not exist.");
+    }
+    if (member != null && member.getPassword().equals(loginDto.getPassword())) {
+    	System.out.println("MEMBER "+member);
+    	MemberDto memberDto=this.memberToMemberDto(member);
+    	if (member.getIsLoggedIn()) {
+            // Set it to false for subsequent logins and update the database
+            member.setIsLoggedIn(false);  
+            memberRepo.save(member);  
+        }
+    	System.out.println("MEMBERDTO1= "+memberDto);
+    	return memberDto;
+    }
+    return null;
+  }
+  
+  @Override
+  public MemberDto createMemberAuth(MemberDto memberDto, String email, String password) {
+  	Member member =this.memberRepo.findByEmail(email);
+  	if(member.getRole().equals(MemberRole.ADMIN)) {
+  		MemberDto saved=this.createMember(memberDto);
+  		return saved;
+  	}
+	return null;
+  }  
+  
+  
+//  @Override
+//  public List<MemberDto> getAllByRole(String role) {
+//    List<Member> member = this.memberRepo.findAllByRole(role);
+//    return member.stream()
+//      .map(mem -> this.modelMapper.map(mem, MemberDto.class))
+//      .collect(Collectors.toList());
+//  }
+
+//  @Override
+//  public void deleteMember(MemberDto memberDto) {
+//    Member member = this.memberRepo.findByEmail(memberDto.getEmail());
+//    if (member != null) {
+//      this.memberRepo.delete(member);
+//    }
+//  }
+  
+  
+  private Member memberDtoToMember(MemberDto memberDto) {
+	    if (memberDto == null) {
+	        throw new IllegalArgumentException("MemberDto cannot be null.");
+	    }
+
+	    Member member = new Member();
+	    member.setEmail(memberDto.getEmail());
+	    member.setMemberId(memberDto.getMemberId());
+	    member.setName(memberDto.getName());
+	    member.setPassword(memberDto.getPassword());
+	    if (memberDto.getRole() != null) {
+	        try {
+	            member.setRole(MemberRole.valueOf(memberDto.getRole().name()));
+	        } catch (IllegalArgumentException e) {
+	            throw new IllegalArgumentException("Invalid member role provided: " + memberDto.getRole());
+	        }
+	    }
+
+	    if (memberDto.getDepartment() != null && memberDto.getDepartment().getDeptName() != null) {
+	        Department department = deptRepo.findByDeptName(memberDto.getDepartment().getDeptName());
+	        if (department != null) {
+	            member.setDepartment(department);
+	        }
+	    }
+
+	    return member;
+	}
+
+
+  
+  
+  private MemberDto memberToMemberDto(Member member) {
+	    if (member == null) {
+	        throw new IllegalArgumentException("Member cannot be null.");
+	    }
+
+	    MemberDto memberDto = new MemberDto();
+	    memberDto.setEmail(member.getEmail());
+	    memberDto.setMemberId(member.getMemberId());
+	    memberDto.setName(member.getName());
+	    memberDto.setPassword(member.getPassword());
+	    if (member.getRole() != null) {
+	        memberDto.setRole(MemberRole.valueOf(member.getRole().name()));
+	    }
+
+	    if (member.getDepartment() != null) {
+	        DepartmentDto departmentDto = DeptToDeptDto(member.getDepartment());
+	        memberDto.setDepartment(departmentDto);
+	    }
+
+	    return memberDto;
+	}
+ 
+  private DepartmentDto DeptToDeptDto(Department department) {
+	    if (department == null) return null;
+	    DepartmentDto departmentDto = new DepartmentDto();
+	    departmentDto.setDeptId(department.getDeptId());
+	    departmentDto.setDeptName(department.getDeptName());
+	    
+	    return departmentDto;
+	}
+
+
+ 
+  
+}

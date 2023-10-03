@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Styles/Sidebar.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Sidebar = (props) => {
   const navigate = useNavigate();
@@ -9,6 +9,29 @@ const Sidebar = (props) => {
   const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
   const responseData = storedData.responseData || {};
   const userRole = responseData.role;
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setActiveButton(() => {
+      switch (location.pathname) {
+        case "/NewMember":
+          return "NewUser";
+        case "/NewTicket":
+          return "NewTicket";
+        case "/NewDepartment":
+          return "NewDepartment";
+        case "/UserTable":
+          return "AllUsers";
+        case "/DepartmentTable":
+          return "AllDepartments";
+        case "/TicketTable":
+          return "AllTicket";
+        default:
+          return "";
+      }
+    });
+  }, [location.pathname]);
 
   const handleButtonClick = (path, buttonId) => {
     navigate(path);
@@ -49,7 +72,7 @@ const Sidebar = (props) => {
               className={activeButton === "AllUsers" ? "active" : ""}
               onClick={() => handleButtonClick("/UserTable", "AllUsers")}
             >
-              Users
+              Users ⏩
             </button>
             <button
               disabled={props.disableValue}
@@ -58,7 +81,7 @@ const Sidebar = (props) => {
                 handleButtonClick("/DepartmentTable", "AllDepartments")
               }
             >
-              Departments
+              Departments ⏩
             </button>
 
             <button
@@ -68,7 +91,7 @@ const Sidebar = (props) => {
                 handleButtonClick("/TicketTable", "AllTicket");
               }}
             >
-              Tickets
+              Tickets ⏩
             </button>
           </>
         )}
@@ -90,7 +113,7 @@ const Sidebar = (props) => {
                 // props.myTicket(false);
               }}
             >
-              Tickets
+              Tickets ⏩
             </button>
           </>
         )}

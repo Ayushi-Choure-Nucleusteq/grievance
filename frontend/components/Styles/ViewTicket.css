@@ -8,17 +8,17 @@
     justify-content: space-between;
     gap: 10px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    background-color: #fff;
+    background-color: #eff1f19e;
     padding: 20px;
     border-radius: 8px;
     flex-direction: row;
 }
 
-form {
+.ticketform {
     max-width: 450px;
     margin: 0px auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: #eff1f19e;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
 }
@@ -54,13 +54,12 @@ h2 {
 }
 
 .ticket-details .details-section label {
-    /* display: block; */
     margin-right: 10px;
     flex-shrink: 0;
     width: 120px;
-    /* margin-bottom: 3px; */
+    margin-bottom: 10px;
     /* font-weight: 600; */
-    color: #555;
+    color: #0f0845;
     font-weight: bold;
     font-size: medium;
 }
@@ -127,10 +126,17 @@ h2 {
 
 .ticket-details .cmtContainer li{
     padding: 5px;
-    border: 1px solid #000;
+    border: 1px solid #7d819db5;
     border-radius: 10px;
+    border-width: medium;
     margin: 5px;
     word-break: break-all;
+    /* border-block-color: #000; */
+    box-shadow: white;
+    box-shadow: 0, 0px, 20px rgba(0, 0, 0.08);
+    background-color: #e7e7ef4d;
+    font-weight: 600;
+    box-shadow: -10px 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .cmtby{

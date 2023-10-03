@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "../Styles/Login.css";
 import axios from "axios";
+import Popup from "../Popup/Popup";
 import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:8000/api/member/login";
 
 const Login = (props) => {
-  const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
-  const requestData = storedData.requestData || {};
-  const responseData = storedData.responseData || {};
+  // const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
+  // const requestData = storedData.requestData || {};
+  // const responseData = storedData.responseData || {};
 
   const [username, setUsername] = useState("");
   const [pass, setPassword] = useState("");
@@ -18,12 +19,11 @@ const Login = (props) => {
   const [loginError, setLoginError] = useState("");
 
   useEffect(() => {
-    // to Clear session when the Login component is loaded.
     localStorage.removeItem("loginData");
   }, []);
 
   const checkusername = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.trim();
     setUsername(value);
     if (value !== value.toLowerCase()) {
       setErrorMsg("Email should be in lowercase.");
@@ -65,6 +65,7 @@ const Login = (props) => {
   };
 
   const handleApiCall = async (data) => {
+    setLoginError("");
     try {
       const response = await axios.post(API_URL, data);
       if (response?.status === 202) {
@@ -77,6 +78,7 @@ const Login = (props) => {
         };
         localStorage.setItem("loginData", JSON.stringify(dataToStore));
         if (response?.data?.isLoggedIn) {
+          props.setFirstTimeLogin(true);
           navigate("/ChangePassword");
           return;
         }
@@ -91,7 +93,7 @@ const Login = (props) => {
       if (err.response && err.response.data) {
         setLoginError(err.response.data.message);
       } else {
-        setLoginError("Login Failed! Please check your credentials.");
+        setLoginError("Login Failed! Network Error");
       }
     }
   };
@@ -142,12 +144,12 @@ const Login = (props) => {
       <div className="login_container">
         <div className="form-container">
           <h2>Greivance Management</h2>
-          {/* {loginError? <Popup message= {loginError} color="red"></Popup>:""} */}
-          {loginError && (
+          {loginError && <Popup message={loginError} color="red"></Popup>}
+          {/* {loginError && (
             <div className="error-popup" onClick={() => setLoginError("")}>
               {loginError}
             </div>
-          )}
+          )} */}
           {/* <h2>Login</h2> */}
           <h1>{props.msg ? props.msg : ""}</h1>
           <form onSubmit={handleSubmit} className="login_form">

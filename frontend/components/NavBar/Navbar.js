@@ -1,9 +1,11 @@
 import React from "react";
 import "../Styles/Navbar.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = (props) => {
   const Navigate = useNavigate();
+  const location = useLocation();
+
   const logoutsession = () => {
     localStorage.removeItem("loginData");
     Navigate("/");
@@ -25,14 +27,14 @@ const Navbar = (props) => {
       <div>
         <ul>
           <li
-            onClick={() => handleProfileClick("/Profile")}
-            className={props.disableValue ? "disabled" : ""}
+            onClick={handleProfileClick}
+            className={`${props.disableValue ? "disabled" : ""} ${location.pathname === "/Profile" ? "active" : ""}`}
           >
             Profile
           </li>
           <li
-            onClick={() => handleButtonClick("/ChangePassword")}
-            className={props.disableValue ? "disabled" : ""}
+            onClick={handleButtonClick}
+            className={`${props.disableValue ? "disabled" : ""} ${location.pathname === "/ChangePassword" ? "active" : ""}`}
           >
             Change Password
           </li>

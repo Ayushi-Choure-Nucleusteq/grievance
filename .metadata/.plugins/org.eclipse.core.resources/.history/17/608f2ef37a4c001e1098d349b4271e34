@@ -1,0 +1,78 @@
+package com.grievance.serviceimpl;
+
+import com.grievance.entity.Department;
+import com.grievance.payloads.DepartmentDto;
+import com.grievance.repository.DepartmentRepo;
+import com.grievance.service.DepartmentService;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+
+/**
+ * 
+ */
+@Service
+public class DepartmentServiceImpl implements DepartmentService {
+
+  @Autowired
+  DepartmentRepo deptRepo;
+  
+  @Autowired 
+  ModelMapper modelMapper;
+
+
+  @Override
+  public DepartmentDto createDepartment(DepartmentDto deptDto) {
+	  Department existingDept = deptRepo.findByDeptName(deptDto.getDeptName());
+	    if(existingDept != null) {
+	        throw new IllegalArgumentException("Department with name " + deptDto.getDeptName() + " already exists.");
+	    }
+	    
+	    Department dept = this.DeptDtoToDept(deptDto);
+	    Department savedDept = this.deptRepo.save(dept);
+	    return this.DeptToDeptDto(savedDept);
+  }
+
+  @Override
+  public List<DepartmentDto> getAllDepts() {
+    List<Department> dept = this.deptRepo.findAll();
+    return dept.stream()
+      .map(department -> this.DeptToDeptDto(department))
+      .collect(Collectors.toList());
+  }
+
+  @Override
+  public void deleteDept(DepartmentDto deptDto) {
+    Department dept = this.deptRepo.findByDeptId(deptDto.getDeptId());
+    // Uncomment the next line if you want to throw an exception when not found
+    // .orElseThrow(() -> new ResourceNotFoundException("Dept not exists"));
+    this.deptRepo.delete(dept);
+    // Uncomment the next line if you want to return a ResponseEntity
+    // ResponseEntity<?> responseEntity = new ResponseEntity<Object>(Map.of
+    //("Message","Department Deleted"), HttpStatus.OK);
+  }
+  
+  private Department DeptDtoToDept(DepartmentDto deptDto) {
+	    Department department= new Department();
+	    department.setDeptId(deptDto.getDeptId()); 
+	    department.setDeptName(deptDto.getDeptName());
+	    return department;
+	}
+
+
+private DepartmentDto DeptToDeptDto(Department department) {
+  if (department == null) return null;
+  System.out.println("Input Department: " + department);
+  DepartmentDto departmentDto = new DepartmentDto();
+  departmentDto.setDeptId(department.getDeptId());
+  departmentDto.setDeptName(department.getDeptName());
+  System.out.println("Converted DepartmentDto: " + departmentDto);
+  
+  return departmentDto;
+}
+ 
+}

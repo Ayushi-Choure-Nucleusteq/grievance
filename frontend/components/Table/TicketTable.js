@@ -1,55 +1,55 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../Styles/TicketTable.css";
+import NoDataImage from "../../Images/login.jpg";
 
 const API_URL = "http://localhost:8000/api/ticket/getAll";
 
 function TicketTable(props) {
   const [tickets, setTickets] = useState([]);
   const [status, setStatus] = useState("filter");
-  const [filtered, setFilter] = useState([]);
   const [pageNo, setPageNo] = useState(0);
   const [myTicket, setMyTicket] = useState(false);
+  const TICKETS_PER_PAGE = 5;
 
   const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
   const requestData = storedData.requestData || {};
   const navigate = useNavigate();
-
   const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        let endpoint = `${API_URL}?myTicket=${myTicket}&pageNo=${pageNo}`;
+  const fetchTickets = useCallback(async () => {
+    setTickets([]);
+    setHasMore(true);
 
-        if (status && status !== "filter") {
-          endpoint += `&status=${status}`;
-        }
+    let endpoint = `${API_URL}?myTicket=${myTicket}&pageNo=${pageNo}`;
+    if (status && status !== "filter") {
+      endpoint += `&status=${status}`;
+    }
 
-        const response = await axios.get(endpoint, {
-          headers: {
-            email: requestData.email,
-            password: requestData.password,
-          },
-        });
+    try {
+      const response = await axios.get(endpoint, {
+        headers: {
+          email: requestData.email,
+          password: requestData.password,
+        },
+      });
 
-        if (response.data.length === 0) {
-          setHasMore(false);
-        } else {
-          setTickets(response.data);
-          setFilter(response.data);
-          setHasMore(true);
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setHasMore(false);
-        }
+      if (response.data.length === 0) {
+        setHasMore(false);
+      } else {
+        setTickets(response.data);
       }
-    };
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setHasMore(false);
+      }
+    }
+  }, [pageNo, status, myTicket, requestData.email, requestData.password]);
 
+  useEffect(() => {
     fetchTickets();
-  }, [pageNo, status, myTicket]);
+  }, [fetchTickets, status, myTicket]);
 
   const handleTicketView = (ticketId) => {
     navigate(`/ViewTicket/${ticketId}`);
@@ -57,11 +57,6 @@ function TicketTable(props) {
 
   const handleStatus = (value) => {
     setStatus(value);
-    if (value === "filter") {
-      setFilter(tickets);
-    } else {
-      setFilter(tickets.filter((ele) => ele.status === value));
-    }
   };
 
   const handleMyTicket = (e) => {
@@ -80,9 +75,9 @@ function TicketTable(props) {
           onChange={(event) => handleStatus(event.target.value)}
         >
           <option value="filter">Filter</option>
+          <option value="OPEN">OPEN</option>
           <option value="BEING_ADDRESSED">BEING ADDRESSED</option>
           <option value="RESOLVED">RESOLVED</option>
-          <option value="OPEN">OPEN</option>
         </select>
 
         <div>
@@ -91,7 +86,7 @@ function TicketTable(props) {
             onChange={(e) => handleMyTicket(e)}
             type="checkbox"
             name="myTicket"
-            value="Bike"
+            value="myTicket"
           />
           <label htmlFor="myTicketCheckbox"> My Ticket</label>
         </div>
@@ -112,10 +107,10 @@ function TicketTable(props) {
         </thead>
 
         <tbody>
-          {filtered.map((ticket, index) => (
+          {tickets.map((ticket, index) => (
             <tr key={ticket.id} className="short-height">
               {/* <td>{ticket.ticketId}</td> */}
-              <td>{index + 1}</td>
+              <td>{pageNo * TICKETS_PER_PAGE + index + 1}</td>
               <td>{ticket.ticketName}</td>
               <td>{ticket.status}</td>
               <td>{ticket.department}</td>
@@ -126,7 +121,7 @@ function TicketTable(props) {
                   onClick={() => handleTicketView(ticket.ticketId)}
                   className="edit-btn"
                 >
-                  Edit
+                  View
                 </button>
               </td>
             </tr>
@@ -134,11 +129,12 @@ function TicketTable(props) {
         </tbody>
       </table>
 
-      {filtered.length === 0 && (
+      {tickets.length === 0 && (
         <img
           className="nodataImage"
-          src="C:\Users\ayush\OneDrive\Desktop\Working\Grievance_FRONT\src\Images\login.jpg"
-        ></img>
+          src={NoDataImage}
+          alt="No Data Available"
+        />
       )}
       <div className="pagination-buttons">
         {pageNo > 0 && (
@@ -146,7 +142,7 @@ function TicketTable(props) {
             className="pagination-btn"
             onClick={() => setPageNo((prevPageNo) => prevPageNo - 1)}
           >
-            Previous
+            ⬅️Previous
           </button>
         )}
         {hasMore && (
@@ -154,7 +150,7 @@ function TicketTable(props) {
             className="pagination-btn"
             onClick={() => setPageNo((prevPageNo) => prevPageNo + 1)}
           >
-            Next
+            Next ➡️
           </button>
         )}
       </div>

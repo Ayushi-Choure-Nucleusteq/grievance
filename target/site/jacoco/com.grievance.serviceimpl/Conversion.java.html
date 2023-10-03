@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Conversion.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">grievance</a> &gt; <a href="index.source.html" class="el_package">com.grievance.serviceimpl</a> &gt; <span class="el_source">Conversion.java</span></div><h1>Conversion.java</h1><pre class="source lang-java linenums">package com.grievance.serviceimpl;
+
+import java.util.List;
+
+import java.util.Objects;
+
+import org.springframework.stereotype.Component;
+
+import com.grievance.outdto.DepartmentOutDto;
+import com.grievance.outdto.MemberOutDto;
+import com.grievance.outdto.TicketOutDto;
+import com.grievance.entity.Comment;
+import com.grievance.entity.Department;
+import com.grievance.entity.Member;
+import com.grievance.entity.Ticket;
+import com.grievance.indto.DepartmentDto;
+import com.grievance.indto.MemberDto;
+import com.grievance.indto.TicketDto;
+
+/**
+ * Conversion class.
+ */
+@Component
+<span class="fc" id="L24">public class Conversion {</span>
+
+    /**
+     * Convert from DepartmentDto to Department entity.
+     *
+     * @param dto the DepartmentDto to convert.
+     * @return the corresponding Department entity.
+     */
+    final Department departmentDtoToEntity(
+            final DepartmentDto dto) {
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        if (Objects.isNull(dto)) {</span>
+<span class="nc" id="L35">            return null;</span>
+        }
+
+<span class="fc" id="L38">        Department department = new Department();</span>
+<span class="fc" id="L39">        department.setDeptName(dto.getDeptName());</span>
+
+<span class="fc" id="L41">        return department;</span>
+    }
+
+    /**
+     * Convert from Department entity to DepartmentOutDto.
+     *
+     * @param department the Department entity to convert.
+     * @return the corresponding DepartmentOutDto.
+     */
+    final DepartmentOutDto departmentToOutDto(
+    		final Department department) {
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (Objects.isNull(department)) {</span>
+<span class="nc" id="L53">            return null;</span>
+        }
+
+<span class="fc" id="L56">        DepartmentOutDto dto = new DepartmentOutDto();</span>
+<span class="fc" id="L57">        dto.setDeptId(department.getDeptId());</span>
+<span class="fc" id="L58">        dto.setDeptName(department.getDeptName());</span>
+
+<span class="fc" id="L60">        return dto;</span>
+    }
+
+    /**
+     * Converts the provided MemberDto into a Member entity.
+     *
+     * @param dto the MemberDto to convert.
+     * @return the resulting Member entity.
+     */
+    final Member memberdtoToEntity(final MemberDto dto) {
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (Objects.isNull(dto)) {</span>
+<span class="nc" id="L71">            return null;</span>
+        }
+
+<span class="fc" id="L74">        Member member = new Member();</span>
+<span class="fc" id="L75">        member.setName(dto.getName());</span>
+<span class="fc" id="L76">        member.setEmail(dto.getEmail());</span>
+<span class="fc" id="L77">        member.setPassword(dto.getPassword());</span>
+<span class="fc" id="L78">        member.setRole(dto.getRole());</span>
+
+<span class="fc" id="L80">        Department department = departmentDtoToEntity(dto.getDepartment());</span>
+<span class="fc" id="L81">        member.setDepartment(department);</span>
+
+<span class="fc" id="L83">        return member;</span>
+    }
+
+    /**
+     * Converts the provided Member entity into a MemberOutDto.
+     *
+     * @param entity the Member entity to convert.
+     * @return the resulting MemberOutDto.
+     */
+    final MemberOutDto memberToOutDto(final Member entity) {
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        if (Objects.isNull(entity)) {</span>
+<span class="nc" id="L94">            return null;</span>
+        }
+
+<span class="fc" id="L97">        MemberOutDto dto = new MemberOutDto();</span>
+<span class="fc" id="L98">        dto.setId(entity.getId());</span>
+<span class="fc" id="L99">        dto.setName(entity.getName());</span>
+<span class="fc" id="L100">        dto.setEmail(entity.getEmail());</span>
+<span class="fc" id="L101">        dto.setIsLoggedIn(entity.getIsLoggedIn());</span>
+<span class="fc" id="L102">        dto.setRole(entity.getRole());</span>
+
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (Objects.nonNull(entity.getDepartment())) {</span>
+<span class="fc" id="L105">            dto.setDeptName(entity.getDepartment().getDeptName());</span>
+        }
+<span class="fc" id="L107">        return dto;</span>
+    }
+
+    /**
+     * Converts the provided TicketDto into a Ticket entity.
+     *
+     * @param dto the TicketDto to convert.
+     * @return the resulting Ticket entity.
+     */
+    final Ticket ticketdtoToTicket(final TicketDto dto) {
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if (Objects.isNull(dto)) {</span>
+<span class="nc" id="L118">            return null;</span>
+        }
+
+<span class="fc" id="L121">        Ticket entity = new Ticket();</span>
+<span class="fc" id="L122">        entity.setTicketName(dto.getTicketName());</span>
+<span class="fc" id="L123">        entity.setDescription(dto.getDescription());</span>
+<span class="fc" id="L124">        entity.setStatus(dto.getStatus());</span>
+<span class="fc" id="L125">        entity.setCreationDate(dto.getCreationDate());</span>
+<span class="fc" id="L126">        entity.setLastUpdateDate(dto.getLastUpdateDate());</span>
+<span class="fc" id="L127">        entity.setTicketType(dto.getTicketType());</span>
+
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (Objects.nonNull(dto.getComments())) {</span>
+<span class="nc" id="L130">            List&lt;Comment&gt; comments = entity.getComments();</span>
+<span class="nc" id="L131">            Comment newComment = new Comment();</span>
+<span class="nc" id="L132">            newComment.setContent(dto.getComments());</span>
+<span class="nc" id="L133">            newComment.setTicket(entity);</span>
+<span class="nc" id="L134">            newComment.setMemberEmail(dto.getMember().getEmail());</span>
+<span class="nc" id="L135">            comments.add(newComment);</span>
+<span class="nc" id="L136">            entity.setComments(comments);</span>
+        }
+
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (Objects.nonNull(dto.getDepartment())) {</span>
+<span class="fc" id="L140">            Department department = new Department();</span>
+<span class="fc" id="L141">            department.setDeptName(dto.getDepartment().getDeptName());</span>
+<span class="fc" id="L142">            entity.setDepartment(department);</span>
+        }
+
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (Objects.nonNull(dto.getMember())) {</span>
+<span class="fc" id="L146">            Member member = new Member();</span>
+<span class="fc" id="L147">            entity.setMember(member);</span>
+        }
+<span class="fc" id="L149">        return entity;</span>
+    }
+
+    /**
+     * Converts a given Ticket entity into a TicketOutDto.
+     *
+     * @param entity the Ticket entity to convert.
+     * @return the resulting TicketOutDto.
+     */
+    final TicketOutDto ticketToOutDto(final Ticket entity) {
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if (Objects.isNull(entity)) {</span>
+<span class="nc" id="L160">            return null;</span>
+        }
+
+<span class="fc" id="L163">        TicketOutDto outDto = new TicketOutDto();</span>
+<span class="fc" id="L164">        outDto.setTicketId(entity.getTicketId());</span>
+<span class="fc" id="L165">        outDto.setTicketName(entity.getTicketName());</span>
+<span class="fc" id="L166">        outDto.setDescription(entity.getDescription());</span>
+<span class="fc" id="L167">        outDto.setStatus(entity.getStatus());</span>
+<span class="fc" id="L168">        outDto.setCreationDate(entity.getCreationDate());</span>
+<span class="fc" id="L169">        outDto.setLastUpdateDate(entity.getLastUpdateDate());</span>
+<span class="fc" id="L170">        outDto.setTicketType(entity.getTicketType());</span>
+<span class="fc" id="L171">        outDto.setComments(entity.getComments());</span>
+
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (Objects.nonNull(entity.getMember())) {</span>
+<span class="fc" id="L174">            outDto.setMember(entity.getMember().getName());</span>
+        }
+
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">        if (Objects.nonNull(entity.getDepartment())) {</span>
+<span class="fc" id="L178">            outDto.setDepartment(entity.getDepartment().getDeptName());</span>
+        }
+
+<span class="fc" id="L181">        return outDto;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

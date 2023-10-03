@@ -1,0 +1,68 @@
+package com.grievance.payloads;
+
+import javax.validation.constraints.NotEmpty;
+
+/**
+ * Data Transfer Object for Department.
+ */
+public class DepartmentDto {
+
+  /**
+ * 
+ */
+private Integer deptId;
+
+@NotEmpty
+private String deptName;
+
+  /**
+   * Default constructor.
+   */
+ private MemberDto member;
+  public DepartmentDto() {
+    super();
+  }
+
+  /**
+   * Parameterized constructor.
+   *
+   * @param deptId   The department ID.
+   * @param deptName The name of the department.
+   */
+  public DepartmentDto(Integer deptId, String deptName) {
+    super();
+    this.deptId = deptId;
+    this.deptName = deptName;
+  }
+
+  public Integer getDeptId() {
+    return deptId;
+  }
+
+  public void setDeptId(Integer deptId) {
+    this.deptId = deptId;
+  }
+
+  public String getDeptName() {
+    return deptName;
+  }
+
+  public void setDeptName(String deptName) {
+    this.deptName = deptName;
+  }
+
+  @Override
+  public String toString() {
+    return "DepartmentDto [deptId=" + deptId 
+      + ", deptName=" + deptName 
+      + ", getDeptId()=" + getDeptId()
+      + ", getDeptName()=" + getDeptName() 
+      + ", getClass()=" + getClass() 
+      + ", hashCode()=" + hashCode()
+      + ", toString()=" + super.toString() + "]";
+  }
+
+  public DepartmentDto(String deptName) {
+      this.deptName = deptName;
+  }
+}

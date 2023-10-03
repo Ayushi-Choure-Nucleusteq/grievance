@@ -26,9 +26,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const userRole = responseData.role;
 
   const navigate = useNavigate();
-
   if (!allowedRoles.includes(userRole)) {
-    navigate("/"); // Redirect to home or another suitable page
+    navigate("/");
     return null;
   }
 
@@ -39,6 +38,7 @@ function App() {
   const [loginmsg, setloginmsg] = useState(null);
   const storedData = JSON.parse(localStorage.getItem("loginData")) || {};
   const responseData = storedData.responseData || {};
+  const [firstTimeLogin, setFirstTimeLogin] = useState(false);
 
   const getloginmsg = (value) => {
     setloginmsg(value);
@@ -54,7 +54,7 @@ function App() {
 
     // to clear the session.when user loggedin and hits login url.
     if (isLoggedIn && isLoginPage) {
-      sessionStorage.removeItem("loginData");
+      localStorage.removeItem("loginData");
       window.location.reload();
     }
 
@@ -71,7 +71,7 @@ function App() {
 
           <div className="main-content">
             <Routes>
-              <Route path="/" element={<Login msg={loginmsg} />} />
+            <Route path="/" element={<Login msg={loginmsg} firstTimeLogin={firstTimeLogin} setFirstTimeLogin={setFirstTimeLogin} />} />
               <Route
                 path="/NewMember"
                 element={

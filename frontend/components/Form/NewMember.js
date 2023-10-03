@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "../Styles/NewMember.css";
 import Popup from "../Popup/Popup";
 import axios from "axios";
@@ -27,23 +27,24 @@ function NewMember() {
   const [successMessage, setSuccessMessage] = useState(null);
 
   //to fetch department for the dropdown
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await axios.get(API_URL_GET_ALL_DEPTS, {
-          headers: {
-            email: requestData.email,
-            password: requestData.password,
-          },
-        });
-        setDepartments(response.data);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
 
+  const fetchDepartments = useCallback(async () => {
+    try {
+      const response = await axios.get(API_URL_GET_ALL_DEPTS, {
+        headers: {
+          email: requestData.email,
+          password: requestData.password,
+        },
+      });
+      setDepartments(response.data);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  }, [requestData.email, requestData.password]);
+
+  useEffect(() => {
     fetchDepartments();
-  }, []);
+  }, [fetchDepartments]);
 
   //Api call to add user after encoding the password
   const handleApiCall = async () => {
@@ -54,13 +55,23 @@ function NewMember() {
         password: encodedPassword,
       };
 
-      const response = await axios.post(API_URL_CREATE_MEMBER, dataToSend, {
+      await axios.post(API_URL_CREATE_MEMBER, dataToSend, {
         headers: {
           email: requestData.email,
           password: requestData.password,
         },
       });
       setSuccessMessage("User Added successfully!");
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        role: "",
+        department: {
+          deptId: 1,
+          deptName: "",
+        },
+      });
     } catch (error) {
       if (error.response && error.response.data) {
         setBackendError(error.response.data.message);
@@ -68,7 +79,6 @@ function NewMember() {
     }
   };
 
-  //handling changes from the form. Setting formData or errror if persists.
   const handleChange = (e) => {
     if (e.target.name === "department") {
       const selectedDept = departments.find(
@@ -125,8 +135,11 @@ function NewMember() {
     e.preventDefault();
     const validationErrors = {};
 
-    if (!formData.name) {
+    if (!formData.name || formData.name.trim() === "") {
       validationErrors.name = "Name cannot be empty.";
+    } else if (!checkName(formData.name.trim())) {
+      validationErrors.name =
+        "Name should start with an uppercase letter and contain atleast 3 letters.";
     }
     if (!formData.email) {
       validationErrors.email = "Email cannot be empty.";
@@ -139,7 +152,7 @@ function NewMember() {
       validationErrors.password = "Password cannot be empty.";
     } else if (!checkPassword(formData.password)) {
       validationErrors.password =
-        "Password must contain an uppercase letter, a lowercase letter, a number, a special character, and be at least 8 characters long.";
+        "Password must contain an uppercase letter, a lowercase letter, a number, a special character, and be atleast 8 characters long.";
     }
 
     if (!formData.role) {
@@ -185,7 +198,7 @@ function NewMember() {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          onkeyup={handleSubmit}
+          // onkeyup={handleSubmit}
           placeholder="john@nucleusteq.com"
         />
         {errors.email && <span>{errors.email}</span>}

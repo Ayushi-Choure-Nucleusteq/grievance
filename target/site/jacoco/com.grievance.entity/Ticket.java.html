@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Ticket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">grievance</a> &gt; <a href="index.source.html" class="el_package">com.grievance.entity</a> &gt; <span class="el_source">Ticket.java</span></div><h1>Ticket.java</h1><pre class="source lang-java linenums">package com.grievance.entity;
+
+import java.util.List;
+
+import java.util.Objects;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.grievance.enums.TicketStatus;
+import com.grievance.enums.TicketType;
+
+/**
+ * Entity class representing a Ticket in the system.
+ */
+@Entity
+<span class="fc" id="L26">public final class Ticket {</span>
+
+    /** Id of the ticket. */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer ticketId;
+
+	/** Name of the ticket. */
+	@Column(name = &quot;ticket_name&quot;)
+	private String ticketName;
+
+	/** Description of the ticket. */
+	@Column(name = &quot;description&quot;)
+	private String description;
+
+	/** Status of the ticket. */
+	private TicketStatus status;
+
+	/** Creation date of the ticket. */
+	private String creationDate;
+
+	/** Last update date of the ticket. */
+	@Column(name = &quot;last_update&quot;)
+	private String lastUpdateDate;
+
+	/** Type of the ticket. */
+	@Column(name = &quot;ticket_type&quot;)
+	private TicketType ticketType;
+
+	/** Department of the ticket. */
+	@ManyToOne
+	@JoinColumn(name = &quot;department_id&quot;)
+	private Department department;
+
+	/** Member associated with the ticket. */
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = &quot;member_id&quot;)
+	private Member member;
+
+	/** Comments associated with the ticket. */
+	@OneToMany(cascade = CascadeType.ALL,
+			mappedBy = &quot;ticket&quot;, fetch = FetchType.EAGER)
+	@JsonManagedReference
+	private List&lt;Comment&gt; comments;
+
+	/**
+	 * Gets the ticket ID.
+	 *
+	 * @return the ticket ID
+	 */
+	public Integer getTicketId() {
+<span class="fc" id="L77">		return ticketId;</span>
+	}
+
+	/**
+	 * Sets the ticket ID.
+	 *
+	 * @param aticketId the ticket ID
+	 */
+	public void setTicketId(final Integer aticketId) {
+<span class="fc" id="L86">		this.ticketId = aticketId;</span>
+<span class="fc" id="L87">	}</span>
+
+	/**
+	 * Gets the ticket name.
+	 *
+	 * @return the ticket name
+	 */
+	public String getTicketName() {
+<span class="fc" id="L95">		return ticketName;</span>
+	}
+
+	/**
+	 * Sets the ticket name.
+	 *
+	 * @param aticketName the ticket name
+	 */
+	public void setTicketName(final String aticketName) {
+<span class="fc" id="L104">		this.ticketName = aticketName;</span>
+<span class="fc" id="L105">	}</span>
+
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+<span class="fc" id="L113">		return description;</span>
+	}
+
+	/**
+	 * Sets the description.
+	 *
+	 * @param adescription the description
+	 */
+	public void setDescription(final String adescription) {
+<span class="fc" id="L122">		this.description = adescription;</span>
+<span class="fc" id="L123">	}</span>
+
+	/**
+	 * Gets the ticket status.
+	 *
+	 * @return the status
+	 */
+	public TicketStatus getStatus() {
+<span class="fc" id="L131">		return status;</span>
+	}
+
+	/**
+	 * Sets the ticket status.
+	 *
+	 * @param astatus the ticket status
+	 */
+	public void setStatus(final TicketStatus astatus) {
+<span class="fc" id="L140">		this.status = astatus;</span>
+<span class="fc" id="L141">	}</span>
+
+	/**
+	 * Gets the creation date.
+	 *
+	 * @return the creation date
+	 */
+	public String getCreationDate() {
+<span class="fc" id="L149">		return creationDate;</span>
+	}
+
+	/**
+	 * Sets the creation date.
+	 *
+	 * @param acreationDate the creation date
+	 */
+	public void setCreationDate(final String acreationDate) {
+<span class="fc" id="L158">		this.creationDate = acreationDate;</span>
+<span class="fc" id="L159">	}</span>
+
+	/**
+	 * Gets the last update date.
+	 *
+	 * @return the last update date
+	 */
+	public String getLastUpdateDate() {
+<span class="fc" id="L167">		return lastUpdateDate;</span>
+	}
+
+	/**
+	 * Sets the last update date.
+	 *
+	 * @param alastUpdateDate the last update date
+	 */
+	public void setLastUpdateDate(final String alastUpdateDate) {
+<span class="fc" id="L176">		this.lastUpdateDate = alastUpdateDate;</span>
+<span class="fc" id="L177">	}</span>
+
+	/**
+	 * Gets the ticket type.
+	 *
+	 * @return the ticket type
+	 */
+	public TicketType getTicketType() {
+<span class="fc" id="L185">		return ticketType;</span>
+	}
+
+	/**
+	 * Sets the ticket type.
+	 *
+	 * @param aticketType the ticket type
+	 */
+	public void setTicketType(final TicketType aticketType) {
+<span class="fc" id="L194">		this.ticketType = aticketType;</span>
+<span class="fc" id="L195">	}</span>
+
+	/**
+	 * Gets the associated department.
+	 *
+	 * @return the department
+	 */
+	public Department getDepartment() {
+<span class="fc" id="L203">		return department;</span>
+	}
+
+	/**
+	 * Sets the associated department.
+	 *
+	 * @param adepartment the department
+	 */
+	public void setDepartment(final Department adepartment) {
+<span class="fc" id="L212">		this.department = adepartment;</span>
+<span class="fc" id="L213">	}</span>
+
+	/**
+	 * Gets the member associated with the ticket.
+	 *
+	 * @return the member
+	 */
+	public Member getMember() {
+<span class="fc" id="L221">		return member;</span>
+	}
+
+	/**
+	 * Sets the member associated with the ticket.
+	 *
+	 * @param amember the member
+	 */
+	public void setMember(final Member amember) {
+<span class="fc" id="L230">		this.member = amember;</span>
+<span class="fc" id="L231">	}</span>
+
+	/**
+	 * Gets the list of comments for the ticket.
+	 *
+	 * @return the list of comments
+	 */
+	public List&lt;Comment&gt; getComments() {
+<span class="fc" id="L239">		return comments;</span>
+	}
+
+	/**
+	 * Sets the list of comments for the ticket.
+	 *
+	 * @param acomments the list of comments
+	 */
+	public void setComments(final List&lt;Comment&gt; acomments) {
+<span class="fc" id="L248">		this.comments = acomments;</span>
+<span class="fc" id="L249">	}</span>
+
+	@Override
+	public String toString() {
+<span class="fc" id="L253">		return &quot;Ticket [ticketId=&quot; + ticketId + &quot;, ticketName=&quot;</span>
+				+ ticketName + &quot;, description=&quot; + description
+				+ &quot;, status=&quot; + status + &quot;, creationDate=&quot;
+				+ creationDate + &quot;, lastUpdateDate=&quot;
+				+ lastUpdateDate + &quot;, ticketType=&quot;
+				+ ticketType + &quot;]&quot;;
+	}
+
+	/**
+	 * Hash Code method.
+	 */
+	@Override
+	public int hashCode() {
+<span class="fc" id="L266">		return Objects.hash(creationDate,</span>
+				description, lastUpdateDate,
+				member, status, ticketId,
+				ticketName, ticketType);
+	}
+
+	/**
+	 * Equals Method.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">		if (this == obj) {</span>
+<span class="nc" id="L278">			return true;</span>
+		}
+<span class="pc bpc" id="L280" title="1 of 2 branches missed.">		if (obj == null) {</span>
+<span class="nc" id="L281">			return false;</span>
+		}
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">		if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L284">			return false;</span>
+		}
+<span class="fc" id="L286">		Ticket other = (Ticket) obj;</span>
+<span class="fc bfc" id="L287" title="All 2 branches covered.">		return Objects.equals(creationDate,</span>
+						other.creationDate)
+<span class="pc bpc" id="L289" title="1 of 2 branches missed.">				&amp;&amp; Objects.equals(description,</span>
+						other.description)
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">				&amp;&amp; Objects.equals(lastUpdateDate,</span>
+						other.lastUpdateDate)
+<span class="pc bpc" id="L293" title="2 of 4 branches missed.">				&amp;&amp; Objects.equals(member,</span>
+						other.member)
+				&amp;&amp; status == other.status
+<span class="pc bpc" id="L296" title="1 of 2 branches missed.">				&amp;&amp; Objects.equals(ticketId,</span>
+						other.ticketId)
+<span class="pc bpc" id="L298" title="2 of 4 branches missed.">				&amp;&amp; Objects.equals(ticketName,</span>
+						other.ticketName)
+				&amp;&amp; ticketType == other.ticketType;
+	}
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

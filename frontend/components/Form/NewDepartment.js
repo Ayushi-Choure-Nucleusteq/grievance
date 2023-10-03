@@ -15,7 +15,7 @@ const NewDepartment = () => {
 
   const handleApiCall = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         API_URL_CREATE_DEPARTMENT,
         { deptName },
         {
@@ -28,6 +28,7 @@ const NewDepartment = () => {
 
       setSuccessMessage("Department Added successfully!");
       setMessage("");
+      setDeptName("");
     } catch (error) {
       setMessage(error.response.data.message || "An error occurred.");
       setSuccessMessage("");
@@ -47,6 +48,7 @@ const NewDepartment = () => {
   return (
     <form onSubmit={handleSubmit}>
       <h2>New Department</h2>
+      <br></br>
       {/* {successMessage && <div className="success-message">{successMessage}</div>} */}
       {successMessage ? (
         <Popup message={successMessage} color="green"></Popup>
