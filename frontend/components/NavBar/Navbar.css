@@ -1,0 +1,44 @@
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #1b203f;
+  color: white;
+}
+
+nav h2 {
+  margin: 0;
+  flex: 100%;
+  text-align: center;
+  color: #f4f4f4;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 10px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+nav ul li {
+  cursor: pointer;
+  padding: 5px;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.active {
+  background-color: #125ee1;
+  font-weight: bold;
+}
+

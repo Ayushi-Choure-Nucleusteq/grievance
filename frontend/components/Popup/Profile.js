@@ -1,5 +1,5 @@
 import React from "react";
-import "../Styles/Profile.css";
+import "./Profile.css";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -18,12 +18,15 @@ const Profile = () => {
         <button className="close-button" onClick={onClose}>
           X
         </button>
-        <h2 className="profile">Profile</h2>
+        <h2 className="profile">👤</h2>
         <div className="profile-field">
           <strong>Name:</strong> {responseData.name}
         </div>
         <div className="profile-field">
           <strong>Email:</strong> {responseData.email}
+        </div>
+        <div className="profile-field">
+          <strong>UserId:</strong> {responseData.id}
         </div>
         <div className="profile-field">
           <strong>Role:</strong> {responseData.role}

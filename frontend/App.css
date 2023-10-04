@@ -10,6 +10,7 @@
   flex: 1;
   height: 90vh;
   overflow: hidden;
+  background-color: #FFFFE4;
 }
 
 .main-content {

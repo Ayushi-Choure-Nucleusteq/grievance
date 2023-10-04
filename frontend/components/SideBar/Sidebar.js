@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../Styles/Sidebar.css";
+import "./Sidebar.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Sidebar = (props) => {

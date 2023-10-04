@@ -1,5 +1,5 @@
 import React from "react";
-import "../Styles/Navbar.css";
+import "./Navbar.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = (props) => {
@@ -7,8 +7,10 @@ const Navbar = (props) => {
   const location = useLocation();
 
   const logoutsession = () => {
+    if (window.confirm('Are you sure?')) {
     localStorage.removeItem("loginData");
     Navigate("/");
+  }
   };
 
   const handleButtonClick = () => {
