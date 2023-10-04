@@ -91,6 +91,7 @@ public final class TicketController {
 	 * @param email
 	 * @param password
 	 * @param myTicket
+	 * @param myDeptTicket
 	 * @param pageNo
 	 * @param status
 	 * @return ResponseEntity containing the all ticket and HTTP status
@@ -100,20 +101,21 @@ public final class TicketController {
 			@RequestHeader final String email,
 			@RequestHeader final String password,
 			@RequestParam final boolean myTicket,
+			@RequestParam final boolean myDeptTicket,
 			@RequestParam final Integer pageNo,
 			@RequestParam(required = false)
 			final Optional<TicketStatus> status) {
 		LOGGER.info("Fetching all tickets for user: {}", email);
 		if (status.isPresent()) {
 		  return new ResponseEntity<>(ticketService.getAllTicketsFilter(
-				email, password, myTicket, pageNo, status),
+				email, password, myTicket, myDeptTicket, pageNo, status),
 					HttpStatus.ACCEPTED);
 
 
 		} else {
 			return new ResponseEntity<>(
 					ticketService.getAllTicketsAuth(
-					email, password, myTicket, pageNo),
+					email, password, myTicket, myDeptTicket, pageNo),
 					HttpStatus.ACCEPTED);
 		}
 	}

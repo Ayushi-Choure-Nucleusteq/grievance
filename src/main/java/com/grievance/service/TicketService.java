@@ -30,12 +30,14 @@ public interface TicketService {
 	 * @param email    User's email.
 	 * @param password User's password.
 	 * @param myTicket Whether the tickets are personal to the user.
+	 * @param myDeptTicket
 	 * @param pageNo page number.
 	 * @param status status for filter.
 	 * @return List of TicketOutDto representing the retrieved tickets.
 	 */
 	List<TicketOutDto> getAllTicketsFilter(String email, String password,
 			boolean myTicket,
+			boolean myDeptTicket,
 			Integer pageNo,
 			Optional<TicketStatus> status);
 
@@ -68,11 +70,12 @@ public interface TicketService {
 	 * @param email
 	 * @param password
 	 * @param myTicket
+	 * @param myDeptTicket
 	 * @param pageNo
 	 * @return the output DTO of the created ticket
 	 */
 	List<TicketOutDto> getAllTicketsAuth(
 		String email, String password,
-		boolean myTicket, Integer pageNo);
+		boolean myTicket, boolean myDeptTicket, Integer pageNo);
 
 }

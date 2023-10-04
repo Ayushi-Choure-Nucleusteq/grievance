@@ -1,9 +1,13 @@
 package com.grievance.repository;
 
 import com.grievance.entity.Member;
+
 import com.grievance.enums.MemberRole;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface MemberRepo extends JpaRepository<Member, Integer> {
+    
 
     /**
      * Finds a member by its email address.
@@ -34,4 +39,13 @@ public interface MemberRepo extends JpaRepository<Member, Integer> {
             String email,
     		String password,
     		MemberRole memberRole);
+    
+    /**
+     * Retrieves all members sorted by their ID in ascending order.
+     *
+     * @param of pageable
+     * @return List of all members sorted by ID.
+     */
+    @Query("SELECT m FROM Member m ORDER BY m.department.deptId ASC")
+    Page<Member> findAll(Pageable of);
 }

@@ -189,7 +189,7 @@ public class TicketServiceTest {
 		    when(memberRepo.findByEmail(ticketDto.getMember().getEmail())).thenReturn(testMember);
 		    when(ticketRepo.findAll(any(Pageable.class))).thenReturn(Page.empty());
 
-		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false, 0));
+		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,false, 0));
 		}
 
 		
@@ -201,7 +201,7 @@ public class TicketServiceTest {
 	        when(memberRepo.findByEmail(anyString())).thenReturn(testMember);
 	        when(ticketRepo.findAllAndStatus(any(Pageable.class), any())).thenReturn(ticketPage);
 
-	        List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "password", false, 0, Optional.empty());
+	        List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "password", false, false, 0, Optional.empty());
 
 	        assertEquals(1, result.size());
 	    }
@@ -222,7 +222,7 @@ public class TicketServiceTest {
 
 			Optional<TicketStatus> status = Optional.of(TicketStatus.OPEN);
 
-			List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", true,
+			List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", true, false,
 					0, status);
 			assertEquals(1, result.size());
 			assertEquals(TicketStatus.OPEN, result.get(0).getStatus());
@@ -232,7 +232,7 @@ public class TicketServiceTest {
 		public void testGetAllTicketsFilter_NoTicketsForStatus() {
 		    when(ticketRepo.findAllAndStatus(any(Pageable.class), eq(Optional.of(TicketStatus.OPEN)))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
-		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "password", false, 0, Optional.of(TicketStatus.OPEN)));
+		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "password", false,false, 0, Optional.of(TicketStatus.OPEN)));
 		}
 
 		
@@ -248,7 +248,7 @@ public class TicketServiceTest {
 		    when(ticketRepo.findAllAndStatus(any(Pageable.class), any())).thenReturn(ticketPage);
 		    when(ticketRepo.findByDepartmentAndStatus(eq(testMember.getDepartment().getDeptId()), any(Optional.class), any(Pageable.class))).thenReturn(ticketPage);
 
-		    List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false, 0, Optional.empty());
+		    List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,false, 0, Optional.empty());
 		    assertEquals(1, result.size());
 		}
 		
@@ -256,7 +256,7 @@ public class TicketServiceTest {
 		public void testGetAllTicketsFilter_NoTickets() {
 		    when(ticketRepo.findAllAndStatus(any(Pageable.class), any())).thenReturn(new PageImpl<>(new ArrayList<>()));
 
-		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "password", false, 0, Optional.empty()));
+		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "password", false,false, 0, Optional.empty()));
 		}
 
 		@SuppressWarnings("unchecked")
@@ -273,7 +273,7 @@ public class TicketServiceTest {
 
 		    Optional<TicketStatus> status = Optional.of(TicketStatus.OPEN);
 
-		    List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,
+		    List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,false,
 		            0, status);
 		    assertEquals(1, result.size());
 		    assertEquals(TicketStatus.OPEN, result.get(0).getStatus());
@@ -286,7 +286,7 @@ public class TicketServiceTest {
 		    when(memberRepo.findByEmail("ayushi@nucleusteq.com")).thenReturn(testMember);
 		    when(ticketRepo.findAllAndStatus(any(Pageable.class), eq(Optional.of(TicketStatus.BEING_ADDRESSED)))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
-		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "password", false, 0, Optional.of(TicketStatus.BEING_ADDRESSED)));
+		    assertThrows(ResourceNotFoundException.class, () -> ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "password", false,false, 0, Optional.of(TicketStatus.BEING_ADDRESSED)));
 		}
 		
 		@Test
@@ -298,11 +298,46 @@ public class TicketServiceTest {
 			when(memberRepo.findByEmail("ayushi@nucleusteq.com")).thenReturn(testMember);
 			when(ticketRepo.findAll(any(Pageable.class))).thenReturn(ticketPage);
 
-			List<TicketOutDto> result = ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,
+			List<TicketOutDto> result = ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,false,
 					0);
 
 			assertEquals(1, result.size());
 		}
+		
+		@Test
+        public void testGetAllTicketsAuth_AdminDepartmentTickets() {
+
+            testMember.setRole(MemberRole.ADMIN);
+            testMember.setDepartment(dept);
+            ticket.setDepartment(dept);
+            List<Ticket> ticketList = Arrays.asList(ticket);
+            Page<Ticket> ticketPage = new PageImpl<>(ticketList);
+            when(memberRepo.findByEmail("ayushi@nucleusteq.com")).thenReturn(testMember);
+            when(ticketRepo.findAll(any(Pageable.class))).thenReturn(ticketPage);
+            
+            when(ticketRepo.findByDepartment(any(Department.class),any(Pageable.class))).thenReturn(ticketPage);
+
+            List<TicketOutDto> result = ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,true,
+                    0);
+            assertEquals(1, result.size());
+        }
+		
+		@Test
+        public void testGetAllTicketsAuth_AdminDepartmentTicketsFilter() {
+
+            testMember.setRole(MemberRole.ADMIN);
+            testMember.setDepartment(dept);
+            ticket.setDepartment(dept);
+            List<Ticket> ticketList = Arrays.asList(ticket);
+            Page<Ticket> ticketPage = new PageImpl<>(ticketList);
+            when(memberRepo.findByEmail("ayushi@nucleusteq.com")).thenReturn(testMember);
+            when(ticketRepo.findAllAndStatus(any(Pageable.class), any())).thenReturn(ticketPage);
+            when(ticketRepo.findByDepartmentAndStatus(eq(testMember.getDepartment().getDeptId()), any(Optional.class), any(Pageable.class))).thenReturn(ticketPage);
+
+            List<TicketOutDto> result = ticketService.getAllTicketsFilter("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false, true,
+                    0, Optional.empty());
+            assertEquals(1, result.size());
+        }
 		
 		@Test
         public void testGetAllTicketsAuth_MemberAllTickets() {
@@ -314,7 +349,7 @@ public class TicketServiceTest {
             when(ticketRepo.findAll(any(Pageable.class))).thenReturn(ticketPage);
             when(ticketRepo.findByDepartment(any(Department.class), any(Pageable.class))).thenReturn(ticketPage);
 
-            List<TicketOutDto> result = ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,
+            List<TicketOutDto> result = ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", false,false,
                     0);
 
             assertEquals(1, result.size());
@@ -329,7 +364,7 @@ public class TicketServiceTest {
             when(ticketRepo.findAll(any(Pageable.class))).thenReturn(ticketPage);
             when(ticketRepo.findByMember(any(Member.class), any(Pageable.class))).thenReturn(ticketPage);
 
-            List<TicketOutDto> result = ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", true,
+            List<TicketOutDto> result = ticketService.getAllTicketsAuth("ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==", true,false,
                     0);
 
             assertEquals(1, result.size());
@@ -358,21 +393,14 @@ public class TicketServiceTest {
 		}
 
 		
-//		@Test
-//		public void testUpdateTicket_DepartmentEmailMismatch() {
-//		    Department differentDept = new Department();
-//		    differentDept.setDeptId(2);
-//		    differentDept.setDeptName("IT");
-//		    testMember.setDepartment(differentDept);
-//		    
-//		    // Ensure that the ticketDto's member email is different from the testMember's email.
-//		    ticketDto.getMember().setEmail("differentEmail@example.com");
-//
-//		    when(ticketRepo.findById(anyInt())).thenReturn(Optional.of(ticket));
+		@Test
+		public void testUpdateTicket_EmailMismatch() {
+
+		    when(ticketRepo.findById(anyInt())).thenReturn(Optional.of(ticket));
 //		    when(memberRepo.findByEmail("ayushi@nucleusteq.com")).thenReturn(testMember);
-//		    
-//		    assertThrows(CannotEditTicketException.class, () -> ticketService.updateTicket(ticketDto, 1, "ayushi@nucleusteq.com", "QXl1c2hpQDEyMw=="));
-//		}
+		    
+		    assertThrows(UnauthorizedException.class, () -> ticketService.updateTicket(ticketDto, 1, "ayush@nucleusteq.com", "QXl1c2hpQDEyMw=="));
+		}
 
 		
 		@Test
@@ -408,6 +436,8 @@ public class TicketServiceTest {
 		
 	      @Test
 	        public void testUpdateTicket_WihtCommentSuccess() {
+	            ticketDto.setComments("This is comment");
+//	            ticketDto.setLastUpdateDate(null);
 	            List<Comment> comments = new ArrayList<>();
 	            comments.add(new Comment());
 	            ticket.setComments(comments);

@@ -119,17 +119,19 @@ public class TicketControllerTest {
         String email = "ayushi@nucleusteq.com";
         String password = "QXl1c2hpQDEyMw==";
         boolean myTicket = true;
+        boolean myDeptTicket = false;
         Integer pageNo = 0; 
         List<TicketOutDto> ticketOutDtos = new ArrayList<>();
         ticketOutDtos.add(ticketOutDto);
 
-        when(ticketService.getAllTicketsAuth(email, password, myTicket, pageNo)).thenReturn(ticketOutDtos);
+        when(ticketService.getAllTicketsAuth(email, password, myTicket, myDeptTicket, pageNo)).thenReturn(ticketOutDtos);
 
         MvcResult mvcResult = mockMvc.perform(
             get("/api/ticket/getAll")
                 .header("email", email)
                 .header("password", password)
                 .param("myTicket", String.valueOf(myTicket))
+                .param("myDeptTicket", String.valueOf(myDeptTicket))
                 .param("pageNo", String.valueOf(pageNo))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
@@ -144,12 +146,13 @@ public class TicketControllerTest {
         String email = "ayushi@nucleusteq.com";
         String password = "Password";
         boolean myTicket = true;
+        boolean myDeptTicket = false;
         Integer pageNo = 0;
         TicketStatus providedStatus = TicketStatus.OPEN; 
         List<TicketOutDto> ticketOutDtos = new ArrayList<>();
         ticketOutDtos.add(ticketOutDto);
 
-        when(ticketService.getAllTicketsFilter(email, password, myTicket, pageNo, Optional.of(providedStatus)))
+        when(ticketService.getAllTicketsFilter(email, password, myTicket, myDeptTicket, pageNo, Optional.of(providedStatus)))
             .thenReturn(ticketOutDtos);
 
         MvcResult mvcResult = mockMvc.perform(
@@ -157,6 +160,7 @@ public class TicketControllerTest {
                 .header("email", email)
                 .header("password", password)
                 .param("myTicket", String.valueOf(myTicket))
+                .param("myDeptTicket", String.valueOf(myDeptTicket))
                 .param("pageNo", String.valueOf(pageNo))
                 .param("status", providedStatus.toString())
                 .contentType(MediaType.APPLICATION_JSON)

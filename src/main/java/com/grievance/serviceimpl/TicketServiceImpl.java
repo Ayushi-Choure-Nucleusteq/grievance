@@ -157,7 +157,7 @@ public final class TicketServiceImpl implements TicketService {
 	@Override
 	public List<TicketOutDto> getAllTicketsAuth(final String email,
 			final String password, final boolean myTicket,
-			final Integer pageNo) {
+			final boolean myDeptTicket, final Integer pageNo) {
 	    LOGGER.info("Initiating request to fetch tickets"
 	            + " for user: {}", email);
 		final Integer pageSize = 5;
@@ -185,15 +185,35 @@ public final class TicketServiceImpl implements TicketService {
 			LOGGER.info("Fetching personal tickets for member"
 			        + " with email: {}", email);
 		} else if (member.getRole().equals(MemberRole.ADMIN)) {
+		    if (myDeptTicket) {
+                LOGGER.info("Fetching Department tickets for ADMIN");
+              tickets = (Page<Ticket>) ticketRepo
+                    .findByDepartment(member.getDepartment(),
+                            PageRequest.of(
+                         pageNo, pageSize, Sort.by("status")));
+              if (tickets.isEmpty()) {
+                  LOGGER.warn("No tickets found ADMIN Dept");
+                  throw new ResourceNotFoundException("No Ticket found.");     
+              }
+                      for (Ticket ticket : tickets) {
+                        ticketDtos.add(conversion.
+                                  ticketToOutDto(ticket));
+                      }
+            } else {
 			for (Ticket ticket : tickets) {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}
+           }
 			 LOGGER.info("Fetching all tickets for ADMIN");
 		} else if (member.getRole().equals(MemberRole.MEMBER)) {
 			tickets = (Page<Ticket>) ticketRepo.
 				findByDepartment(member.getDepartment(),
 				  PageRequest.of(pageNo, pageSize, Sort.by(
 						  "status")));
+			if (tickets.isEmpty()) {
+			    throw new ResourceNotFoundException(
+			            "No Ticket found."); 
+			}
 			for (Ticket ticket : tickets) {
 		      ticketDtos.add(conversion.
 						ticketToOutDto(ticket));
@@ -219,7 +239,7 @@ public final class TicketServiceImpl implements TicketService {
 	@Override
 	public List<TicketOutDto> getAllTicketsFilter(final String email,
 			final String password, final boolean myTicket,
-			final Integer pageNo,
+			final boolean myDeptTicket, final Integer pageNo,
 			final Optional<TicketStatus> status) {
 	    LOGGER.info("Initiating request to fetch filtered"
 	            + " tickets for user: {}.", email);
@@ -248,16 +268,37 @@ public final class TicketServiceImpl implements TicketService {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}
 		} else if (member.getRole().equals(MemberRole.ADMIN)) {
+		    if (myDeptTicket) {
+		        LOGGER.info("Fetching Department tickets for ADMIN");
+              tickets = (Page<Ticket>) ticketRepo
+                    .findByDepartmentAndStatus(member.getDepartment()
+                    .getDeptId(), status, PageRequest.of(
+                         pageNo, pageSize, Sort.by("status")));
+              if (tickets.isEmpty()) {
+                  LOGGER.warn("No tickets found ADMIN Dept");
+                  throw new ResourceNotFoundException("No Ticket found.");     
+              } 
+                      for (Ticket ticket : tickets) {
+                        ticketDtos.add(conversion.
+                                  ticketToOutDto(ticket));
+                      
+              }    
+            } else {
 		    LOGGER.info("Fetching all tickets for ADMIN");
 		    for (Ticket ticket : tickets) {
 			  ticketDtos.add(conversion.ticketToOutDto(ticket));
 			}
+            }
 		} else if (member.getRole().equals(MemberRole.MEMBER)) {
 		    LOGGER.info("Fetching all tickets for MEMBER");
 		    tickets = (Page<Ticket>) ticketRepo
 			  .findByDepartmentAndStatus(member.getDepartment()
 				 .getDeptId(), status, PageRequest.of(
 				     pageNo, pageSize, Sort.by("status")));
+		    if (tickets.isEmpty()) {
+		        LOGGER.warn("No tickets found MEMBER Dept");
+                throw new ResourceNotFoundException("No Ticket found."); 
+		    }
 			for (Ticket ticket : tickets) {
 		      ticketDtos.add(conversion.
 						ticketToOutDto(ticket));
