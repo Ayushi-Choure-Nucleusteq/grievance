@@ -126,16 +126,6 @@ public class Conversion {
         entity.setLastUpdateDate(dto.getLastUpdateDate());
         entity.setTicketType(dto.getTicketType());
 
-        if (Objects.nonNull(dto.getComments())) {
-            List<Comment> comments = entity.getComments();
-            Comment newComment = new Comment();
-            newComment.setContent(dto.getComments());
-            newComment.setTicket(entity);
-            newComment.setMemberEmail(dto.getMember().getEmail());
-            comments.add(newComment);
-            entity.setComments(comments);
-        }
-
         if (Objects.nonNull(dto.getDepartment())) {
             Department department = new Department();
             department.setDeptName(dto.getDepartment().getDeptName());

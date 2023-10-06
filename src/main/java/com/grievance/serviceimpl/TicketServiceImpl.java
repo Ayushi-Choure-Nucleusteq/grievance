@@ -378,7 +378,6 @@ public final class TicketServiceImpl implements TicketService {
 		newComment.setTicket(ticket.get());
 		comments.add(newComment);
 		ticket.get().setComments(comments);
-		ticket.get().setTicketId(ticket.get().getTicketId());
 		}
 		Ticket updatedTicket = ticketRepo.save(ticket.get());
 		LOGGER.info("Successfully updated ticket with ID: {}", id);
