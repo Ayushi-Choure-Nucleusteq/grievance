@@ -322,6 +322,7 @@ public class TicketServiceTest {
             assertEquals(1, result.size());
         }
 		
+
 		@Test
         public void testGetAllTicketsAuth_AdminDepartmentTicketsFilter() {
 

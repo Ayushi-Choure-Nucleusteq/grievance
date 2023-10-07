@@ -1,21 +1,18 @@
 package com.grievance.serviceimpl;
 
-import java.util.List;
-
 import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
-import com.grievance.outdto.DepartmentOutDto;
-import com.grievance.outdto.MemberOutDto;
-import com.grievance.outdto.TicketOutDto;
-import com.grievance.entity.Comment;
 import com.grievance.entity.Department;
 import com.grievance.entity.Member;
 import com.grievance.entity.Ticket;
 import com.grievance.indto.DepartmentDto;
 import com.grievance.indto.MemberDto;
 import com.grievance.indto.TicketDto;
+import com.grievance.outdto.DepartmentOutDto;
+import com.grievance.outdto.MemberOutDto;
+import com.grievance.outdto.TicketOutDto;
 
 /**
  * Conversion class.

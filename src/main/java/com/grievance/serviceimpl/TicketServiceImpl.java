@@ -101,7 +101,6 @@ public final class TicketServiceImpl implements TicketService {
 		 LOGGER.info("Found department details for"
 		         + " department name: {}",
 		         ticketDto.getDepartment().getDeptName());
-		ticketDto.setComments(null);
 		Ticket ticket = conversion.ticketdtoToTicket(
 				ticketDto);
 		ticket.setMember(existingMember);
@@ -132,7 +131,7 @@ public final class TicketServiceImpl implements TicketService {
 	public TicketOutDto getById(final Integer ticketId,
 			final String email, final String password)
 			throws ResourceNotFoundException {
-	    LOGGER.info("Fetching ticket by ID: {}", ticketId);
+	    LOGGER.info(email, "Fetching ticket by ID: {}", ticketId);
 		Ticket ticket = ticketRepo.findByticketId(ticketId);
 		if (Objects.isNull(ticket)) {
 		    LOGGER.error("No ticket found "
@@ -151,6 +150,7 @@ public final class TicketServiceImpl implements TicketService {
 	 * @param email
 	 * @param password
 	 * @param myTicket
+	 * @param myDeptTicket
 	 * @param pageNo
 	 * @return the output DTO of the created ticket
 	 */
@@ -231,6 +231,7 @@ public final class TicketServiceImpl implements TicketService {
      * @param email
      * @param password
      * @param myTicket
+     * @param myDeptTicket
      * @param pageNo
      * @param status
      * @return the output DTO of the created ticket
