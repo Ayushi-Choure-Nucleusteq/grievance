@@ -1,24 +1,15 @@
 package com.grievance.exception;
 
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 public class GlobalExceptionHandlerTest {
 
     private GlobalExceptionHandler exceptionHandler;
-//    private WebRequest webRequest;
 
     @BeforeEach
     public void setUp() {
@@ -45,21 +36,6 @@ public class GlobalExceptionHandlerTest {
         assertEquals("Illegal argument", result.getBody().getMessage());
     }
 
-//    @Test
-//    public void testHandleMethodArgsNotValidException() {
-//        MethodArgumentNotValidException ex = mock(MethodArgumentNotValidException.class);
-//        BindingResult bindingResult = mock(BindingResult.class);
-//        FieldError fieldError = new FieldError("object", "field", "defaultMessage");
-//
-//        when(ex.getBindingResult()).thenReturn(bindingResult);
-//        when(bindingResult.getAllErrors()).thenReturn(Arrays.asList(fieldError));
-//
-//        ResponseEntity<Map<String, String>> result = exceptionHandler.handleMethodArgsNotValidException(ex);
-//
-//        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-//        assertTrue(result.getBody().containsKey("field"));
-//        assertEquals("defaultMessage", result.getBody().get("field"));
-//    }
 
     @Test
     public void testHandleRecordAlreadyExistException() {

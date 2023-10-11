@@ -4,7 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +19,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.grievance.outdto.MemberOutDto;
 import com.grievance.entity.Department;
 import com.grievance.entity.Member;
 import com.grievance.entity.Ticket;
@@ -33,6 +36,7 @@ import com.grievance.indto.ChangePasswordDto;
 import com.grievance.indto.DepartmentDto;
 import com.grievance.indto.LoginDto;
 import com.grievance.indto.MemberDto;
+import com.grievance.outdto.MemberOutDto;
 import com.grievance.repository.DepartmentRepo;
 import com.grievance.repository.MemberRepo;
 import com.grievance.serviceimpl.Conversion;
@@ -66,7 +70,6 @@ public class MemberServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
         member = new Member();
         member.setId(1);
         member.setName("Twinkle");

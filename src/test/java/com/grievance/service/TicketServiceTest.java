@@ -323,6 +323,7 @@ public class TicketServiceTest {
         }
 		
 
+		@SuppressWarnings("unchecked")
 		@Test
         public void testGetAllTicketsAuth_AdminDepartmentTicketsFilter() {
 
@@ -340,6 +341,7 @@ public class TicketServiceTest {
             assertEquals(1, result.size());
         }
 		
+
 		@Test
         public void testGetAllTicketsAuth_MemberAllTickets() {
 
@@ -386,13 +388,6 @@ public class TicketServiceTest {
 		    assertThrows(UnauthorizedException.class, () -> ticketService.updateTicket(ticketDto, 1, "wrongEmail@example.com", "QXl1c2hpQDEyMw=="));
 		}
 
-		@Test
-		public void testUpdateTicket_UserNotExist() {
-		    when(ticketRepo.findById(anyInt())).thenReturn(Optional.of(ticket));
-		    when(memberRepo.findByEmail("ayushi@nucleusteq.com")).thenReturn(null);
-		    assertThrows(ResourceNotFoundException.class, () -> ticketService.updateTicket(ticketDto, 1, "ayushi@nucleusteq.com", "QXl1c2hpQDEyMw=="));
-		}
-
 		
 		@Test
 		public void testUpdateTicket_EmailMismatch() {
@@ -419,7 +414,6 @@ public class TicketServiceTest {
 		    when(memberRepo.findByEmail("ayushi@nucleusteq.com")).thenReturn(testMember);
 		    when(ticketRepo.save(any(Ticket.class))).thenReturn(ticket);
 		    TicketOutDto result = ticketService.updateTicket(ticketDto, 1, "ayushi@nucleusteq.com", "QXl1c2hpQDEyMw==");
-//		    assertEquals(expected, result);
 		    assertEquals(expected.getTicketId(), result.getTicketId());
 		    assertEquals(expected.getTicketName(), result.getTicketName());
 		}

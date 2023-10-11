@@ -82,11 +82,6 @@ public final class TicketServiceImpl implements TicketService {
 		Member existingMember = memberRepo.findByEmail(
 				ticketDto.getMember().getEmail());
 
-		if (Objects.isNull(existingMember)) {
-		    LOGGER.error("Email not exists {}", email);
-			throw new ResourceNotFoundException(
-			  "The member associated does not exist.");
-		}
 		LOGGER.info("Found member details for email: {}", email);
 
 		Department department = deptRepo.findByDeptName(
@@ -336,11 +331,6 @@ public final class TicketServiceImpl implements TicketService {
 		}
 		Member member = memberRepo.findByEmail(
 				ticketDto.getMember().getEmail());
-		if (Objects.isNull(member)) {
-		    LOGGER.error("No member associated with email:{}", email);
-			throw new ResourceNotFoundException(
-					"User doesn't exists");
-		}
 		boolean isSameDepartment = ticket.get()
 		        .getDepartment().getDeptName()
 		        .equals(member.getDepartment().getDeptName());

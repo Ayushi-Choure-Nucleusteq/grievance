@@ -117,6 +117,7 @@ public class MemberServiceImpl implements MemberService {
 		return memberOutDto;
 	}
 
+	
 	/**
 	 * Fetches all members in the system.
 	 *
