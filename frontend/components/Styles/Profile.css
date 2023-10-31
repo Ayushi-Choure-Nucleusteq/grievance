@@ -1,0 +1,78 @@
+.profile-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .profile-content {
+    background: #1b203f;
+    padding: 20px;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+    color: white;
+  }
+
+  .profile-field strong {
+    flex-basis: 40%;
+    font-size: larger;
+}
+
+  .profile-field {
+    margin-bottom: 15px;
+    margin-bottom: 15px;
+    text-align: left;
+    display: flex;
+    font-style: italic;
+  }
+
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #af4d1d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100px;
+}
+
+button:hover {
+  background: #329bf1;
+}
+
+
+.profile-content {
+  position: relative;
+
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background: #121412;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 35px;
+}
+
+.close-button:hover {
+  background: #45a049;
+}
+
+.profile {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
